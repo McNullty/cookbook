@@ -206,3 +206,7 @@ jhipster:
 # ===================================================================
 
 # application:
+cookbook:
+  luka:
+    test-string: "Hello world"
+
