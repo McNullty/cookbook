@@ -192,9 +192,4 @@ public class AccountResource {
             password.length() > ManagedUserVM.PASSWORD_MAX_LENGTH
         );
     }
-
-    @GetMapping("/luka/test")
-    public String getTestString(@Value("${cookbook.luka.test-string}") String testValue) {
-        return testValue;
-    }
 }
