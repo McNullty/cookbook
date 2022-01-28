@@ -23,7 +23,7 @@ import tech.jhipster.config.JHipsterProperties;
  * We use the {@link Async} annotation to send emails asynchronously.
  */
 @Service
-public class DefaultMailService {
+public class DefaultMailService implements MailService {
 
     private final Logger log = LoggerFactory.getLogger(DefaultMailService.class);
 
@@ -51,8 +51,10 @@ public class DefaultMailService {
         this.templateEngine = templateEngine;
     }
 
+    @Override
     @Async
-    public void sendEmail(String to, String subject, String content, boolean isMultipart, boolean isHtml) {
+    public void sendEmail(String to, String subject, String content, boolean isMultipart,
+        boolean isHtml) {
         log.debug(
             "Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
             isMultipart,
@@ -77,6 +79,7 @@ public class DefaultMailService {
         }
     }
 
+    @Override
     @Async
     public void sendEmailFromTemplate(User user, String templateName, String titleKey) {
         if (user.getEmail() == null) {
@@ -92,18 +95,21 @@ public class DefaultMailService {
         sendEmail(user.getEmail(), subject, content, false, true);
     }
 
+    @Override
     @Async
     public void sendActivationEmail(User user) {
         log.debug("Sending activation email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
     }
 
+    @Override
     @Async
     public void sendCreationEmail(User user) {
         log.debug("Sending creation email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/creationEmail", "email.activation.title");
     }
 
+    @Override
     @Async
     public void sendPasswordResetMail(User user) {
         log.debug("Sending password reset email to '{}'", user.getEmail());
