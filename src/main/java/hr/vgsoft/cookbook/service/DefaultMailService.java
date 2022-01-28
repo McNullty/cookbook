@@ -51,7 +51,6 @@ public class DefaultMailService implements MailService {
         this.templateEngine = templateEngine;
     }
 
-    @Override
     @Async
     public void sendEmail(String to, String subject, String content, boolean isMultipart,
         boolean isHtml) {
@@ -79,7 +78,6 @@ public class DefaultMailService implements MailService {
         }
     }
 
-    @Override
     @Async
     public void sendEmailFromTemplate(User user, String templateName, String titleKey) {
         if (user.getEmail() == null) {
