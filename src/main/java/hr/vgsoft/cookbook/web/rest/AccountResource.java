@@ -3,7 +3,7 @@ package hr.vgsoft.cookbook.web.rest;
 import hr.vgsoft.cookbook.domain.User;
 import hr.vgsoft.cookbook.repository.UserRepository;
 import hr.vgsoft.cookbook.security.SecurityUtils;
-import hr.vgsoft.cookbook.service.MailService;
+import hr.vgsoft.cookbook.service.DefaultMailService;
 import hr.vgsoft.cookbook.service.UserService;
 import hr.vgsoft.cookbook.service.dto.AdminUserDTO;
 import hr.vgsoft.cookbook.service.dto.PasswordChangeDTO;
@@ -16,7 +16,6 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,9 +39,9 @@ public class AccountResource {
 
     private final UserService userService;
 
-    private final MailService mailService;
+    private final DefaultMailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    public AccountResource(UserRepository userRepository, UserService userService, DefaultMailService mailService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;

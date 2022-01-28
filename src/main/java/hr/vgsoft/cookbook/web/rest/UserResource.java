@@ -4,7 +4,7 @@ import hr.vgsoft.cookbook.config.Constants;
 import hr.vgsoft.cookbook.domain.User;
 import hr.vgsoft.cookbook.repository.UserRepository;
 import hr.vgsoft.cookbook.security.AuthoritiesConstants;
-import hr.vgsoft.cookbook.service.MailService;
+import hr.vgsoft.cookbook.service.DefaultMailService;
 import hr.vgsoft.cookbook.service.UserService;
 import hr.vgsoft.cookbook.service.dto.AdminUserDTO;
 import hr.vgsoft.cookbook.web.rest.errors.BadRequestAlertException;
@@ -85,9 +85,9 @@ public class UserResource {
 
     private final UserRepository userRepository;
 
-    private final MailService mailService;
+    private final DefaultMailService mailService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    public UserResource(UserService userService, UserRepository userRepository, DefaultMailService mailService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
