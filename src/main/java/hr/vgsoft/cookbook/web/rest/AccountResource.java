@@ -3,7 +3,7 @@ package hr.vgsoft.cookbook.web.rest;
 import hr.vgsoft.cookbook.domain.User;
 import hr.vgsoft.cookbook.repository.UserRepository;
 import hr.vgsoft.cookbook.security.SecurityUtils;
-import hr.vgsoft.cookbook.service.DefaultMailService;
+import hr.vgsoft.cookbook.service.MailService;
 import hr.vgsoft.cookbook.service.UserService;
 import hr.vgsoft.cookbook.service.dto.AdminUserDTO;
 import hr.vgsoft.cookbook.service.dto.PasswordChangeDTO;
@@ -39,9 +39,9 @@ public class AccountResource {
 
     private final UserService userService;
 
-    private final DefaultMailService mailService;
+    private final MailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, DefaultMailService mailService) {
+    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;

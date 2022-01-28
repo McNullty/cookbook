@@ -5,13 +5,14 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 import hr.vgsoft.cookbook.service.DefaultMailService;
+import hr.vgsoft.cookbook.service.MailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class NoOpMailConfiguration {
 
-    private final DefaultMailService mockMailService;
+    private final MailService mockMailService;
 
     public NoOpMailConfiguration() {
         mockMailService = mock(DefaultMailService.class);
@@ -19,7 +20,7 @@ public class NoOpMailConfiguration {
     }
 
     @Bean
-    public DefaultMailService mailService() {
+    public MailService mailService() {
         return mockMailService;
     }
 }

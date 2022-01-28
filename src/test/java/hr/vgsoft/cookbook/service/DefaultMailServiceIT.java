@@ -63,7 +63,7 @@ class DefaultMailServiceIT {
     @Captor
     private ArgumentCaptor<MimeMessage> messageCaptor;
 
-    private DefaultMailService mailService;
+    private MailService mailService;
 
     @BeforeEach
     public void setup() {
