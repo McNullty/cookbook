@@ -8,6 +8,7 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,6 +23,7 @@ import tech.jhipster.config.JHipsterProperties;
  * <p>
  * We use the {@link Async} annotation to send emails asynchronously.
  */
+@Profile("default-email")
 @Service
 public class DefaultMailService implements MailService {
 
