@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
+import hr.vgsoft.cookbook.service.DefaultMailService;
 import hr.vgsoft.cookbook.service.MailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,7 @@ public class NoOpMailConfiguration {
     private final MailService mockMailService;
 
     public NoOpMailConfiguration() {
-        mockMailService = mock(MailService.class);
+        mockMailService = mock(DefaultMailService.class);
         doNothing().when(mockMailService).sendActivationEmail(any());
     }
 

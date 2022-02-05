@@ -35,10 +35,10 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import tech.jhipster.config.JHipsterProperties;
 
 /**
- * Integration tests for {@link MailService}.
+ * Integration tests for {@link DefaultMailService}.
  */
 @IntegrationTest
-class MailServiceIT {
+class DefaultMailServiceIT {
 
     private static final String[] languages = {
         "en",
@@ -63,13 +63,13 @@ class MailServiceIT {
     @Captor
     private ArgumentCaptor<MimeMessage> messageCaptor;
 
-    private MailService mailService;
+    private DefaultMailService mailService;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
         doNothing().when(javaMailSender).send(any(MimeMessage.class));
-        mailService = new MailService(jHipsterProperties, javaMailSender, messageSource, templateEngine);
+        mailService = new DefaultMailService(jHipsterProperties, javaMailSender, messageSource, templateEngine);
     }
 
     @Test
