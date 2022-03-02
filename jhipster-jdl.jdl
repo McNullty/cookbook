@@ -1,0 +1,27 @@
+entity Recipe {
+	name String required,
+    description String
+}
+
+entity Ingredient {
+	name String required
+}
+
+entity Unit {
+	name String required
+}
+
+entity IngredientForRecipe {
+	quantity Double required
+}
+
+relationship ManyToOne {
+    IngredientForRecipe{ingredient(name) required} to Ingredient,
+    IngredientForRecipe{unit(name) required} to Unit
+}
+
+relationship OneToMany {
+	Recipe to IngredientForRecipe{recipe(name) required}
+}
+
+

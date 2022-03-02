@@ -40,6 +40,8 @@
     "clientPackageManager": "npm",
     "clientThemeVariant": "",
     "languages": ["en", "hr"],
-    "enableGradleEnterprise": false
+    "enableGradleEnterprise": false,
+    "entities": ["Recipe", "Ingredient", "Unit", "IngredientForRecipe"],
+    "lastLiquibaseTimestamp": 1646248764000
   }
 }

@@ -48,6 +48,11 @@ public class CacheConfiguration {
             createCache(cm, hr.vgsoft.cookbook.domain.User.class.getName());
             createCache(cm, hr.vgsoft.cookbook.domain.Authority.class.getName());
             createCache(cm, hr.vgsoft.cookbook.domain.User.class.getName() + ".authorities");
+            createCache(cm, hr.vgsoft.cookbook.domain.Recipe.class.getName());
+            createCache(cm, hr.vgsoft.cookbook.domain.Recipe.class.getName() + ".ingredientForRecipes");
+            createCache(cm, hr.vgsoft.cookbook.domain.Ingredient.class.getName());
+            createCache(cm, hr.vgsoft.cookbook.domain.Unit.class.getName());
+            createCache(cm, hr.vgsoft.cookbook.domain.IngredientForRecipe.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

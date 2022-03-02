@@ -1,0 +1,24 @@
+{
+  "cookbookApp": {
+    "ingredient": {
+      "home": {
+        "title": "Ingredients",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Kreirati Ingredient",
+        "createOrEditLabel": "Kreirati ili urediti Ingredient",
+        "notFound": "Nije nađeno Ingredients"
+      },
+      "created": "Kreiran je Ingredient sa identifikatorom {{ param }}",
+      "updated": "Ažuriran je Ingredient sa identifikatorom {{ param }}",
+      "deleted": "Obrisan je Ingredient sa identifikatorom {{ param }}",
+      "delete": {
+        "question": "Da li ste sigurni da želite obrisati Ingredient {{ id }}?"
+      },
+      "detail": {
+        "title": "Ingredient"
+      },
+      "id": "ID",
+      "name": "Name"
+    }
+  }
+}

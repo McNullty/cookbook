@@ -1,0 +1,46 @@
+{
+  "name": "IngredientForRecipe",
+  "fields": [
+    {
+      "fieldName": "quantity",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "ingredient",
+      "otherEntityRelationshipName": "ingredientForRecipe",
+      "relationshipValidateRules": "required",
+      "relationshipName": "ingredient",
+      "otherEntityField": "name"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "unit",
+      "otherEntityRelationshipName": "ingredientForRecipe",
+      "relationshipValidateRules": "required",
+      "relationshipName": "unit",
+      "otherEntityField": "name"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "recipe",
+      "otherEntityRelationshipName": "ingredientForRecipe",
+      "relationshipValidateRules": "required",
+      "relationshipName": "recipe",
+      "otherEntityField": "name"
+    }
+  ],
+  "entityTableName": "ingredient_for_recipe",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20220302191924"
+}
