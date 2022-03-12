@@ -1,5 +1,9 @@
 {
-  "name": "Recipe",
+  "applications": "*",
+  "changelogDate": "20220302191921",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "recipe",
   "fields": [
     {
       "fieldName": "name",
@@ -11,22 +15,18 @@
       "fieldType": "String"
     }
   ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Recipe",
+  "pagination": "no",
+  "readOnly": false,
   "relationships": [
     {
-      "relationshipType": "one-to-many",
       "otherEntityName": "ingredientForRecipe",
       "otherEntityRelationshipName": "recipe",
-      "relationshipName": "ingredientForRecipe"
+      "relationshipName": "ingredientForRecipe",
+      "relationshipType": "one-to-many"
     }
   ],
-  "entityTableName": "recipe",
-  "dto": "no",
-  "pagination": "no",
-  "service": "no",
-  "jpaMetamodelFiltering": false,
-  "fluentMethods": true,
-  "readOnly": false,
-  "embedded": false,
-  "applications": "*",
-  "changelogDate": "20220302191921"
+  "service": "no"
 }
