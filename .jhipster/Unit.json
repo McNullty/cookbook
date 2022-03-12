@@ -1,5 +1,9 @@
 {
-  "name": "Unit",
+  "applications": "*",
+  "changelogDate": "20220302191923",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "unit",
   "fields": [
     {
       "fieldName": "name",
@@ -7,15 +11,11 @@
       "fieldValidateRules": ["required"]
     }
   ],
-  "relationships": [],
-  "entityTableName": "unit",
-  "dto": "no",
-  "pagination": "no",
-  "service": "no",
-  "jpaMetamodelFiltering": false,
   "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Unit",
+  "pagination": "no",
   "readOnly": false,
-  "embedded": false,
-  "applications": "*",
-  "changelogDate": "20220302191923"
+  "relationships": [],
+  "service": "no"
 }
