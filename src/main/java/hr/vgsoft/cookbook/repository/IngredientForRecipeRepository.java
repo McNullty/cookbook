@@ -41,4 +41,12 @@ public interface IngredientForRecipeRepository extends JpaRepository<IngredientF
         "select ingredientForRecipe from IngredientForRecipe ingredientForRecipe left join fetch ingredientForRecipe.ingredient left join fetch ingredientForRecipe.unit left join fetch ingredientForRecipe.recipe where ingredientForRecipe.id =:id"
     )
     Optional<IngredientForRecipe> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query(
+        "select distinct ingredientForRecipe from IngredientForRecipe ingredientForRecipe "
+            + "left join fetch ingredientForRecipe.ingredient i "
+            + "left join fetch ingredientForRecipe.unit u "
+            + "left join fetch ingredientForRecipe.recipe r where r.id = :recipeId"
+    )
+    List<IngredientForRecipe> findByRecipeIdWithDetails(@Param("recipeId") Long recipeId);
 }
