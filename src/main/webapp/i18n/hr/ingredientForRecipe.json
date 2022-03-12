@@ -1,0 +1,27 @@
+{
+  "cookbookApp": {
+    "ingredientForRecipe": {
+      "home": {
+        "title": "Ingredient For Recipes",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Kreirati Ingredient For Recipe",
+        "createOrEditLabel": "Kreirati ili urediti Ingredient For Recipe",
+        "notFound": "Nije nađeno Ingredient For Recipes"
+      },
+      "created": "Kreiran je Ingredient For Recipe sa identifikatorom {{ param }}",
+      "updated": "Ažuriran je Ingredient For Recipe sa identifikatorom {{ param }}",
+      "deleted": "Obrisan je Ingredient For Recipe sa identifikatorom {{ param }}",
+      "delete": {
+        "question": "Da li ste sigurni da želite obrisati Ingredient For Recipe {{ id }}?"
+      },
+      "detail": {
+        "title": "Ingredient For Recipe"
+      },
+      "id": "ID",
+      "quantity": "Quantity",
+      "ingredient": "Ingredient",
+      "unit": "Unit",
+      "recipe": "Recipe"
+    }
+  }
+}

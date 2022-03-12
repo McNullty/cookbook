@@ -1,0 +1,24 @@
+{
+  "cookbookApp": {
+    "unit": {
+      "home": {
+        "title": "Units",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Kreirati Unit",
+        "createOrEditLabel": "Kreirati ili urediti Unit",
+        "notFound": "Nije nađeno Units"
+      },
+      "created": "Kreiran je Unit sa identifikatorom {{ param }}",
+      "updated": "Ažuriran je Unit sa identifikatorom {{ param }}",
+      "deleted": "Obrisan je Unit sa identifikatorom {{ param }}",
+      "delete": {
+        "question": "Da li ste sigurni da želite obrisati Unit {{ id }}?"
+      },
+      "detail": {
+        "title": "Unit"
+      },
+      "id": "ID",
+      "name": "Name"
+    }
+  }
+}

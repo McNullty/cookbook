@@ -1,0 +1,27 @@
+{
+  "cookbookApp": {
+    "ingredientForRecipe": {
+      "home": {
+        "title": "Ingredient For Recipes",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ingredient For Recipe",
+        "createOrEditLabel": "Create or edit a Ingredient For Recipe",
+        "notFound": "No Ingredient For Recipes found"
+      },
+      "created": "A new Ingredient For Recipe is created with identifier {{ param }}",
+      "updated": "A Ingredient For Recipe is updated with identifier {{ param }}",
+      "deleted": "A Ingredient For Recipe is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ingredient For Recipe {{ id }}?"
+      },
+      "detail": {
+        "title": "Ingredient For Recipe"
+      },
+      "id": "ID",
+      "quantity": "Quantity",
+      "ingredient": "Ingredient",
+      "unit": "Unit",
+      "recipe": "Recipe"
+    }
+  }
+}
