@@ -20,7 +20,8 @@
       "id": "ID",
       "name": "Name",
       "description": "Description",
-      "ingredientForRecipe": "Ingredient For Recipe"
+      "ingredientForRecipe": "Ingredient For Recipe",
+      "items": "Items"
     }
   }
 }
