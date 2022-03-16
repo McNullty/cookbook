@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Row, Col } from 'reactstrap';
+import { Button, Row, Col, Table } from 'reactstrap';
 import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -16,6 +16,9 @@ export const RecipeWithDetail = (props: RouteComponentProps<{ id: string }>) => 
   }, []);
 
   const recipeEntity = useAppSelector(state => state.recipeWithDetail.entity);
+  const loading = useAppSelector(state => state.recipeWithDetail.loading);
+  const recipeItems = recipeEntity.recipeItems;
+
   return (
     <Row>
       <Col md="8">
@@ -34,7 +37,43 @@ export const RecipeWithDetail = (props: RouteComponentProps<{ id: string }>) => 
               <Translate contentKey="cookbookApp.recipe.items">Items</Translate>
             </span>
           </dt>
-          <dd>TODO</dd>
+          <dd>
+            <div className="table-responsive">
+              {recipeItems && recipeItems.length > 0 ? (
+                <Table responsive>
+                  <thead>
+                  <tr>
+                    <th>
+                      <Translate contentKey="cookbookApp.recipe.itemName">Name</Translate>
+                    </th>
+                    <th>
+                      <Translate contentKey="cookbookApp.recipe.itemQuantity">Quantity</Translate>
+                    </th>
+                    <th>
+                      <Translate contentKey="cookbookApp.recipe.itemUnit">Unit</Translate>
+                    </th>
+                    <th />
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {recipeItems.map((recipeItem, i) => (
+                    <tr key={`entity-${i}`} data-cy="entityTable">
+                      <td>{recipeItem.ingredient}</td>
+                      <td>{recipeItem.quantity}</td>
+                      <td>{recipeItem.unit}</td>
+                    </tr>
+                  ))}
+                  </tbody>
+                </Table>
+              ) : (
+                !loading && (
+                  <div className="alert alert-warning">
+                    <Translate contentKey="cookbookApp.recipe.home.notFound">No Recipes found</Translate>
+                  </div>
+                )
+              )}
+            </div>
+          </dd>
           <dt>
             <span id="description">
               <Translate contentKey="cookbookApp.recipe.description">Description</Translate>
