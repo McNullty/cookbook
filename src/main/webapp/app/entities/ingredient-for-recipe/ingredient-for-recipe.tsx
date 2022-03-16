@@ -50,16 +50,16 @@ export const IngredientForRecipe = (props: RouteComponentProps<{ url: string }>)
                   <Translate contentKey="cookbookApp.ingredientForRecipe.id">ID</Translate>
                 </th>
                 <th>
-                  <Translate contentKey="cookbookApp.ingredientForRecipe.quantity">Quantity</Translate>
+                  <Translate contentKey="cookbookApp.ingredientForRecipe.recipe">Recipe</Translate>
                 </th>
                 <th>
                   <Translate contentKey="cookbookApp.ingredientForRecipe.ingredient">Ingredient</Translate>
                 </th>
                 <th>
-                  <Translate contentKey="cookbookApp.ingredientForRecipe.unit">Unit</Translate>
+                  <Translate contentKey="cookbookApp.ingredientForRecipe.quantity">Quantity</Translate>
                 </th>
                 <th>
-                  <Translate contentKey="cookbookApp.ingredientForRecipe.recipe">Recipe</Translate>
+                  <Translate contentKey="cookbookApp.ingredientForRecipe.unit">Unit</Translate>
                 </th>
                 <th />
               </tr>
@@ -72,7 +72,13 @@ export const IngredientForRecipe = (props: RouteComponentProps<{ url: string }>)
                       {ingredientForRecipe.id}
                     </Button>
                   </td>
-                  <td>{ingredientForRecipe.quantity}</td>
+                  <td>
+                    {ingredientForRecipe.recipe ? (
+                      <Link to={`recipe/${ingredientForRecipe.recipe.id}`}>{ingredientForRecipe.recipe.name}</Link>
+                    ) : (
+                      ''
+                    )}
+                  </td>
                   <td>
                     {ingredientForRecipe.ingredient ? (
                       <Link to={`ingredient/${ingredientForRecipe.ingredient.id}`}>{ingredientForRecipe.ingredient.name}</Link>
@@ -80,16 +86,10 @@ export const IngredientForRecipe = (props: RouteComponentProps<{ url: string }>)
                       ''
                     )}
                   </td>
+                  <td>{ingredientForRecipe.quantity}</td>
                   <td>
                     {ingredientForRecipe.unit ? (
                       <Link to={`unit/${ingredientForRecipe.unit.id}`}>{ingredientForRecipe.unit.name}</Link>
-                    ) : (
-                      ''
-                    )}
-                  </td>
-                  <td>
-                    {ingredientForRecipe.recipe ? (
-                      <Link to={`recipe/${ingredientForRecipe.recipe.id}`}>{ingredientForRecipe.recipe.name}</Link>
                     ) : (
                       ''
                     )}
