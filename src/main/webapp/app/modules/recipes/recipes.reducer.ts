@@ -20,7 +20,7 @@ const apiUrl = 'api/recipes';
 
 
 export const getEntity = createAsyncThunk(
-  'recipe/fetch_entity',
+  'recipeWithDetail/fetch_entity',
   async (id: string | number) => {
     const requestUrl = `${apiUrl}/${id}/details`;
     return axios.get<IRecipeWithDetails>(requestUrl);
@@ -44,7 +44,7 @@ export const RecipeWithDetailsSlice = createEntitySlice({
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
-      })
+      });
   },
 });
 

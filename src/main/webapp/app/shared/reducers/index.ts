@@ -19,6 +19,8 @@ import ingredient from 'app/entities/ingredient/ingredient.reducer';
 import unit from 'app/entities/unit/unit.reducer';
 // prettier-ignore
 import ingredientForRecipe from 'app/entities/ingredient-for-recipe/ingredient-for-recipe.reducer';
+// prettier-ignore
+import recipeWithDetail from 'app/modules/recipes/recipes.reducer'
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 const rootReducer = {
@@ -33,6 +35,7 @@ const rootReducer = {
   password,
   settings,
   recipe,
+  recipeWithDetail,
   ingredient,
   unit,
   ingredientForRecipe,

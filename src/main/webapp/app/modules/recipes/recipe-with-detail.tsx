@@ -15,7 +15,7 @@ export const RecipeWithDetail = (props: RouteComponentProps<{ id: string }>) => 
     dispatch(getEntity(props.match.params.id));
   }, []);
 
-  const recipeEntity = useAppSelector(state => state.recipe.entity);
+  const recipeEntity = useAppSelector(state => state.recipeWithDetail.entity);
   return (
     <Row>
       <Col md="8">
