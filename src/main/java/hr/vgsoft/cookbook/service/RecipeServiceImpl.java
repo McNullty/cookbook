@@ -1,8 +1,6 @@
 package hr.vgsoft.cookbook.service;
 
-import hr.vgsoft.cookbook.domain.IngredientForRecipe;
 import hr.vgsoft.cookbook.domain.Recipe;
-import hr.vgsoft.cookbook.repository.IngredientForRecipeRepository;
 import hr.vgsoft.cookbook.repository.RecipeRepository;
 import hr.vgsoft.cookbook.service.dto.DetailsDTO;
 import java.util.Optional;
@@ -15,13 +13,9 @@ public class RecipeServiceImpl implements RecipeService{
 
     private final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
 
-    private final IngredientForRecipeRepository ingredientRepository;
     private final RecipeRepository recipeRepository;
 
-    public RecipeServiceImpl(
-        IngredientForRecipeRepository ingredientRepository,
-        RecipeRepository recipeRepository) {
-        this.ingredientRepository = ingredientRepository;
+    public RecipeServiceImpl(RecipeRepository recipeRepository) {
         this.recipeRepository = recipeRepository;
     }
 
@@ -30,8 +24,6 @@ public class RecipeServiceImpl implements RecipeService{
 
         Recipe recipe = recipeRepository.getById(id);
         log.info("Retrieved recipe: {}", recipe);
-        IngredientForRecipe ingredientForRecipe = ingredientRepository.getById(id);
-        log.info("Retrieved ingredients: {}", ingredientForRecipe);
         DetailsDTO detailsDTO = new DetailsDTO(recipe);
         log.info("Created DTO: {}", recipe);
         return Optional.of(detailsDTO);
