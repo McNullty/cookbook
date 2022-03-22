@@ -1,6 +1,7 @@
 package hr.vgsoft.cookbook.repository;
 
 import hr.vgsoft.cookbook.domain.Recipe;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,8 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface RecipeRepository extends JpaRepository<Recipe, Long> {}
+public interface RecipeRepository extends JpaRepository<Recipe, Long> {
+
+    @Override
+    Optional<Recipe> findById(Long aLong);
+}

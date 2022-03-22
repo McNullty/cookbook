@@ -22,10 +22,17 @@ public class RecipeServiceImpl implements RecipeService{
     @Override
     public Optional<DetailsDTO> retrieveReceiptWithAllDetails(long id) {
 
-        Recipe recipe = recipeRepository.getById(id);
+        Optional<Recipe> recipe = recipeRepository.findById(id);
         log.info("Retrieved recipe: {}", recipe);
-        DetailsDTO detailsDTO = new DetailsDTO(recipe);
-        log.info("Created DTO: {}", recipe);
-        return Optional.of(detailsDTO);
+        if (recipe.isPresent()) {
+            DetailsDTO detailsDTO = new DetailsDTO(recipe.get());
+            log.info("Created DTO: {}", recipe);
+            return Optional.of(detailsDTO);
+
+        } else {
+            return Optional.empty();
+        }
+
+
     }
 }
