@@ -21,10 +21,10 @@
       "name": "Name",
       "description": "Description",
       "ingredientForRecipe": "Ingredient For Recipe",
-      "items": "Items",
-      "itemName": "Name",
-      "itemQuantity": "Quantity",
-      "itemUnit": "Unit"
+      "ingredients": "Ingredients",
+      "ingredientName": "Name",
+      "ingredientQuantity": "Quantity",
+      "ingredientUnit": "Unit"
     }
   }
 }

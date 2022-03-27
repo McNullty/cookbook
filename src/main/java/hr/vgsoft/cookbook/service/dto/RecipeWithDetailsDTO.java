@@ -1,9 +1,11 @@
 package hr.vgsoft.cookbook.service.dto;
 
+import hr.vgsoft.cookbook.domain.IngredientForRecipe;
 import hr.vgsoft.cookbook.domain.Recipe;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 class RecipeItemsDTO implements Serializable {
 
@@ -50,9 +52,15 @@ public class RecipeWithDetailsDTO implements Serializable {
         this.id = recipe.getId();
         this.name = recipe.getName();
         this.description = recipe.getDescription();
+
+        final Set<IngredientForRecipe> ingredientForRecipes = recipe.getIngredientForRecipes();
+        ingredientForRecipes.forEach( ingredientForRecipe -> {
+            addRecipeIngredient(ingredientForRecipe.getIngredient().getName(),
+                ingredientForRecipe.getQuantity(), ingredientForRecipe.getUnit().getName());
+        });
     }
 
-    public void addRecipeItem(String ingredient, Double quantity, String unit) {
+    private void addRecipeIngredient(String ingredient, Double quantity, String unit) {
         if (recipeItems == null) {
             recipeItems = new ArrayList<>();
         }

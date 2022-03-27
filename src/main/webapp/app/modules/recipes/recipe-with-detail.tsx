@@ -34,7 +34,7 @@ export const RecipeWithDetail = (props: RouteComponentProps<{ id: string }>) => 
           <dd>{recipeEntity.name}</dd>
           <dt>
             <span id="recipe-items">
-              <Translate contentKey="cookbookApp.recipe.items">Items</Translate>
+              <Translate contentKey="cookbookApp.recipe.ingredients">Ingredients</Translate>
             </span>
           </dt>
           <dd>
@@ -44,13 +44,13 @@ export const RecipeWithDetail = (props: RouteComponentProps<{ id: string }>) => 
                   <thead>
                   <tr>
                     <th>
-                      <Translate contentKey="cookbookApp.recipe.itemName">Name</Translate>
+                      <Translate contentKey="cookbookApp.recipe.ingredientName">Name</Translate>
                     </th>
                     <th>
-                      <Translate contentKey="cookbookApp.recipe.itemQuantity">Quantity</Translate>
+                      <Translate contentKey="cookbookApp.recipe.ingredientQuantity">Quantity</Translate>
                     </th>
                     <th>
-                      <Translate contentKey="cookbookApp.recipe.itemUnit">Unit</Translate>
+                      <Translate contentKey="cookbookApp.recipe.ingredientUnit">Unit</Translate>
                     </th>
                     <th />
                   </tr>

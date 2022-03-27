@@ -40,14 +40,6 @@ public class RecipeService {
 
         RecipeWithDetailsDTO recipeWithDetailsDTO = new RecipeWithDetailsDTO(recipe.get());
 
-        List<IngredientForRecipe> ingredients =
-            ingredientForRecipeRepository.findByRecipeIdWithDetails(recipeId);
-
-        ingredients.forEach(ingredient -> recipeWithDetailsDTO.addRecipeItem(
-            ingredient.getIngredient().getName(),
-            ingredient.getQuantity(),
-            ingredient.getUnit().getName()));
-
         log.debug("Returning recipe with details: {}", recipeWithDetailsDTO);
 
         return Optional.of(recipeWithDetailsDTO);
