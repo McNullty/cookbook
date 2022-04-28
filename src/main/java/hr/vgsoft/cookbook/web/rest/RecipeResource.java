@@ -2,6 +2,8 @@ package hr.vgsoft.cookbook.web.rest;
 
 import hr.vgsoft.cookbook.domain.Recipe;
 import hr.vgsoft.cookbook.repository.RecipeRepository;
+import hr.vgsoft.cookbook.service.RecipeService;
+import hr.vgsoft.cookbook.service.dto.RecipeWithDetailsDTO;
 import hr.vgsoft.cookbook.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,8 +38,12 @@ public class RecipeResource {
 
     private final RecipeRepository recipeRepository;
 
-    public RecipeResource(RecipeRepository recipeRepository) {
+    private final RecipeService recipeService;
+
+    public RecipeResource(RecipeRepository recipeRepository,
+        RecipeService recipeService) {
         this.recipeRepository = recipeRepository;
+        this.recipeService = recipeService;
     }
 
     /**
@@ -163,6 +169,19 @@ public class RecipeResource {
     public ResponseEntity<Recipe> getRecipe(@PathVariable Long id) {
         log.debug("REST request to get Recipe : {}", id);
         Optional<Recipe> recipe = recipeRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(recipe);
+    }
+
+    /**
+     * {@code GET  /recipes/:id/details} : get the "id" recipe with details.
+     *
+     * @param id the id of the recipe to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the recipe with details, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/recipes/{id}/details")
+    public ResponseEntity<RecipeWithDetailsDTO> getRecipeWithDetails(@PathVariable Long id) {
+        log.debug("REST request to get Recipe with details : {}", id);
+        Optional<RecipeWithDetailsDTO> recipe = recipeService.getRecipeWithDetails(id);
         return ResponseUtil.wrapOrNotFound(recipe);
     }
 

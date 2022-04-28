@@ -1,5 +1,9 @@
 {
-  "name": "Ingredient",
+  "applications": "*",
+  "changelogDate": "20220302191922",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "ingredient",
   "fields": [
     {
       "fieldName": "name",
@@ -7,15 +11,11 @@
       "fieldValidateRules": ["required"]
     }
   ],
-  "relationships": [],
-  "entityTableName": "ingredient",
-  "dto": "no",
-  "pagination": "no",
-  "service": "no",
-  "jpaMetamodelFiltering": false,
   "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Ingredient",
+  "pagination": "no",
   "readOnly": false,
-  "embedded": false,
-  "applications": "*",
-  "changelogDate": "20220302191922"
+  "relationships": [],
+  "service": "no"
 }

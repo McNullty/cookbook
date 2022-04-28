@@ -1,5 +1,9 @@
 {
-  "name": "IngredientForRecipe",
+  "applications": "*",
+  "changelogDate": "20220302191924",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "ingredient_for_recipe",
   "fields": [
     {
       "fieldName": "quantity",
@@ -7,40 +11,36 @@
       "fieldValidateRules": ["required"]
     }
   ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "IngredientForRecipe",
+  "pagination": "no",
+  "readOnly": false,
   "relationships": [
     {
-      "relationshipType": "many-to-one",
+      "otherEntityField": "name",
       "otherEntityName": "ingredient",
       "otherEntityRelationshipName": "ingredientForRecipe",
-      "relationshipValidateRules": "required",
       "relationshipName": "ingredient",
-      "otherEntityField": "name"
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
     },
     {
-      "relationshipType": "many-to-one",
+      "otherEntityField": "name",
       "otherEntityName": "unit",
       "otherEntityRelationshipName": "ingredientForRecipe",
-      "relationshipValidateRules": "required",
       "relationshipName": "unit",
-      "otherEntityField": "name"
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
     },
     {
-      "relationshipType": "many-to-one",
+      "otherEntityField": "name",
       "otherEntityName": "recipe",
       "otherEntityRelationshipName": "ingredientForRecipe",
-      "relationshipValidateRules": "required",
       "relationshipName": "recipe",
-      "otherEntityField": "name"
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
     }
   ],
-  "entityTableName": "ingredient_for_recipe",
-  "dto": "no",
-  "pagination": "no",
-  "service": "no",
-  "jpaMetamodelFiltering": false,
-  "fluentMethods": true,
-  "readOnly": false,
-  "embedded": false,
-  "applications": "*",
-  "changelogDate": "20220302191924"
+  "service": "no"
 }
