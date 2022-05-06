@@ -3,11 +3,14 @@ package hr.vgsoft.cookbook.service;
 import hr.vgsoft.cookbook.domain.IngredientForRecipe;
 import hr.vgsoft.cookbook.domain.Recipe;
 import hr.vgsoft.cookbook.repository.IngredientForRecipeRepository;
+import hr.vgsoft.cookbook.repository.IngredientRepository;
 import hr.vgsoft.cookbook.repository.RecipeRepository;
+import hr.vgsoft.cookbook.repository.UnitRepository;
+import hr.vgsoft.cookbook.service.dto.RecipeItemsDTO;
 import hr.vgsoft.cookbook.service.dto.RecipeWithDetailsDTO;
-import hr.vgsoft.cookbook.web.rest.errors.RecipeNotFoundException;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,10 +26,16 @@ public class RecipeService {
 
     private final IngredientForRecipeRepository ingredientForRecipeRepository;
 
+    private final IngredientRepository ingredientRepository;
+
+    private final UnitRepository unitRepository;
+
     public RecipeService(RecipeRepository recipeRepository,
-        IngredientForRecipeRepository ingredientForRecipeRepository) {
+                         IngredientForRecipeRepository ingredientForRecipeRepository, IngredientRepository ingredientRepository, UnitRepository unitRepository) {
         this.recipeRepository = recipeRepository;
         this.ingredientForRecipeRepository = ingredientForRecipeRepository;
+        this.ingredientRepository = ingredientRepository;
+        this.unitRepository = unitRepository;
     }
 
     @Transactional(readOnly = true)
@@ -43,5 +52,26 @@ public class RecipeService {
         log.debug("Returning recipe with details: {}", recipeWithDetailsDTO);
 
         return Optional.of(recipeWithDetailsDTO);
+    }
+
+    public Recipe createNewRecipe(RecipeWithDetailsDTO recipeWithDetailsDTO) {
+        Recipe recipe = new Recipe();
+        recipe.setName(recipeWithDetailsDTO.getName());
+        recipe.setDescription(recipeWithDetailsDTO.getDescription());
+        Recipe result = recipeRepository.save(recipe);
+
+        Set<IngredientForRecipe> ingredientForRecipeList = new HashSet<>();
+
+        List<RecipeItemsDTO> recipeItemsDTOs = recipeWithDetailsDTO.getRecipeItems();
+        recipeItemsDTOs.forEach(recipeItemsDTO -> {
+            IngredientForRecipe ingredientForRecipe = new IngredientForRecipe();
+            ingredientForRecipe.setIngredient(ingredientRepository.findByName(recipeItemsDTO.getIngredient()));
+            ingredientForRecipe.setUnit(unitRepository.findByName(recipeItemsDTO.getUnit()));
+            ingredientForRecipe.setQuantity(recipeItemsDTO.getQuantity());
+            ingredientForRecipe.setRecipe(recipe);
+            ingredientForRecipeList.add(ingredientForRecipeRepository.save(ingredientForRecipe));
+        });
+
+        return result;
     }
 }

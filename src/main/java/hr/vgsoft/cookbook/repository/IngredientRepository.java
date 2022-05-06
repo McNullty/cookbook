@@ -4,9 +4,14 @@ import hr.vgsoft.cookbook.domain.Ingredient;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Spring Data SQL repository for the Ingredient entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface IngredientRepository extends JpaRepository<Ingredient, Long> {}
+public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
+
+    Ingredient findByName(String name);
+}

@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface UnitRepository extends JpaRepository<Unit, Long> {}
+public interface UnitRepository extends JpaRepository<Unit, Long> {
+
+    Unit findByName(String name);
+}

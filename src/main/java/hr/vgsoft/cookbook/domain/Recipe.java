@@ -32,7 +32,7 @@ public class Recipe implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "ingredient", "unit", "recipe" }, allowSetters = true)
     private Set<IngredientForRecipe> ingredientForRecipes = new HashSet<>();
