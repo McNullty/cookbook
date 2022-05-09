@@ -7,40 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-class RecipeItemsDTO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private final String ingredient;
-
-    private final Double quantity;
-
-    private final String unit;
-
-    public RecipeItemsDTO(String ingredient, Double quantity, String unit) {
-        this.ingredient = ingredient;
-        this.quantity = quantity;
-        this.unit = unit;
-    }
-
-    public String getIngredient() {
-        return ingredient;
-    }
-
-    public Double getQuantity() {
-        return quantity;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-}
-
 public class RecipeWithDetailsDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private final Long id;
 
     private final String name;
 
@@ -48,8 +17,13 @@ public class RecipeWithDetailsDTO implements Serializable {
 
     private List<RecipeItemsDTO> recipeItems;
 
+    public RecipeWithDetailsDTO(String name, String description, List<RecipeItemsDTO> recipeItems){
+        this.name=name;
+        this.description=description;
+        this.recipeItems=recipeItems;
+    }
+
     public RecipeWithDetailsDTO(Recipe recipe) {
-        this.id = recipe.getId();
         this.name = recipe.getName();
         this.description = recipe.getDescription();
 
@@ -65,10 +39,6 @@ public class RecipeWithDetailsDTO implements Serializable {
             recipeItems = new ArrayList<>();
         }
         recipeItems.add(new RecipeItemsDTO(ingredient, quantity, unit));
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {
