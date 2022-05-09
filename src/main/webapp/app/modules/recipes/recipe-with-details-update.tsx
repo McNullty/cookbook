@@ -20,7 +20,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
   const updating = useAppSelector(state => state.recipeWithDetail.updating);
   const updateSuccess = useAppSelector(state => state.recipeWithDetail.updateSuccess);
   const handleClose = () => {
-    props.history.push('/recipe');
+    props.history.push('/recipes');
   };
 
   useEffect(() => {

@@ -73,10 +73,21 @@ export const RecipeWithDetailsSlice = createEntitySlice({
           entities: data,
         };
       })
+      .addMatcher(isFulfilled(createEntity, updateEntity), (state, action) => {
+        state.updating = false;
+        state.loading = false;
+        state.updateSuccess = true;
+        state.entity = action.payload.data;
+      })
       .addMatcher(isPending(getEntities, getEntity), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
+      })
+      .addMatcher(isPending(createEntity, updateEntity), state => {
+        state.errorMessage = null;
+        state.updateSuccess = false;
+        state.updating = true;
       });
   },
 });
