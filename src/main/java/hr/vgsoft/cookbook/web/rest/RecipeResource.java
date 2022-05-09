@@ -3,6 +3,8 @@ package hr.vgsoft.cookbook.web.rest;
 import hr.vgsoft.cookbook.domain.Recipe;
 import hr.vgsoft.cookbook.repository.RecipeRepository;
 import hr.vgsoft.cookbook.service.RecipeService;
+import hr.vgsoft.cookbook.service.dto.RecipeWithDetailsDTO;
+import hr.vgsoft.cookbook.service.RecipeService;
 import hr.vgsoft.cookbook.service.dto.DetailsDTO;
 import hr.vgsoft.cookbook.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -40,6 +42,10 @@ public class RecipeResource {
     private final RecipeService recipeService;
 
     public RecipeResource(RecipeRepository recipeRepository, RecipeService recipeService) {
+    private final RecipeService recipeService;
+
+    public RecipeResource(RecipeRepository recipeRepository,
+        RecipeService recipeService) {
         this.recipeRepository = recipeRepository;
         this.recipeService = recipeService;
     }
@@ -47,22 +53,20 @@ public class RecipeResource {
     /**
      * {@code POST  /recipes} : Create a new recipe.
      *
-     * @param recipe the recipe to create.
+     * @param recipeWithDetailsDTO the recipe to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new recipe, or with status {@code 400 (Bad Request)} if the recipe has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/recipes")
-    public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody Recipe recipe) throws URISyntaxException {
-        log.debug("REST request to save Recipe : {}", recipe);
-        if (recipe.getId() != null) {
-            throw new BadRequestAlertException("A new recipe cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        Recipe result = recipeRepository.save(recipe);
+    public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody RecipeWithDetailsDTO recipeWithDetailsDTO) throws URISyntaxException {
+        log.debug("REST request to save Recipe : {}", recipeWithDetailsDTO);
+        Recipe result = recipeService.createNewRecipe(recipeWithDetailsDTO);
         return ResponseEntity
             .created(new URI("/api/recipes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
 
     /**
      * {@code PUT  /recipes/:id} : Updates an existing recipe.
@@ -167,6 +171,19 @@ public class RecipeResource {
     public ResponseEntity<Recipe> getRecipe(@PathVariable Long id) {
         log.debug("REST request to get Recipe : {}", id);
         Optional<Recipe> recipe = recipeRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(recipe);
+    }
+
+    /**
+     * {@code GET  /recipes/:id/details} : get the "id" recipe with details.
+     *
+     * @param id the id of the recipe to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the recipe with details, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/recipes/{id}/details")
+    public ResponseEntity<RecipeWithDetailsDTO> getRecipeWithDetails(@PathVariable Long id) {
+        log.debug("REST request to get Recipe with details : {}", id);
+        Optional<RecipeWithDetailsDTO> recipe = recipeService.getRecipeWithDetails(id);
         return ResponseUtil.wrapOrNotFound(recipe);
     }
 

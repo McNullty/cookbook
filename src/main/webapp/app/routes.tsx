@@ -9,11 +9,13 @@ import PasswordResetInit from 'app/modules/account/password-reset/init/password-
 import PasswordResetFinish from 'app/modules/account/password-reset/finish/password-reset-finish';
 import Logout from 'app/modules/login/logout';
 import Home from 'app/modules/home/home';
+import Recipes from 'app/modules/recipes';
 import Entities from 'app/entities';
 import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
+import RecipeWithDetail from "app/modules/recipes/recipe-with-detail";
 
 const Account = Loadable({
   loader: () => import(/* webpackChunkName: "account" */ 'app/modules/account'),
@@ -38,6 +40,7 @@ const Routes = () => {
         <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
         <PrivateRoute path="/account" component={Account} hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]} />
         <ErrorBoundaryRoute path="/" exact component={Home} />
+        <PrivateRoute path="/recipes" component={Recipes} hasAnyAuthorities={[AUTHORITIES.USER]} />
         <PrivateRoute path="/" component={Entities} hasAnyAuthorities={[AUTHORITIES.USER]} />
         <ErrorBoundaryRoute component={PageNotFound} />
       </Switch>

@@ -143,12 +143,13 @@ public class IngredientForRecipeResource {
     /**
      * {@code GET  /ingredient-for-recipes} : get all the ingredientForRecipes.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ingredientForRecipes in body.
      */
     @GetMapping("/ingredient-for-recipes")
-    public List<IngredientForRecipe> getAllIngredientForRecipes() {
+    public List<IngredientForRecipe> getAllIngredientForRecipes(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get all IngredientForRecipes");
-        return ingredientForRecipeRepository.findAll();
+        return ingredientForRecipeRepository.findAllWithEagerRelationships();
     }
 
     /**
@@ -160,7 +161,7 @@ public class IngredientForRecipeResource {
     @GetMapping("/ingredient-for-recipes/{id}")
     public ResponseEntity<IngredientForRecipe> getIngredientForRecipe(@PathVariable Long id) {
         log.debug("REST request to get IngredientForRecipe : {}", id);
-        Optional<IngredientForRecipe> ingredientForRecipe = ingredientForRecipeRepository.findById(id);
+        Optional<IngredientForRecipe> ingredientForRecipe = ingredientForRecipeRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(ingredientForRecipe);
     }
 
