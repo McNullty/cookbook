@@ -8,6 +8,9 @@ public class IngredientForRecipeDTO {
     private Double quantity;
     private String unit;
 
+    public IngredientForRecipeDTO() {
+    }
+
     public IngredientForRecipeDTO(IngredientForRecipe ingredientForRecipe) {
         this.ingredient = ingredientForRecipe.getIngredient().getName();
         this.quantity = ingredientForRecipe.getQuantity();

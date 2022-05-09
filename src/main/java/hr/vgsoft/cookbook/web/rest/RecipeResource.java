@@ -3,8 +3,6 @@ package hr.vgsoft.cookbook.web.rest;
 import hr.vgsoft.cookbook.domain.Recipe;
 import hr.vgsoft.cookbook.repository.RecipeRepository;
 import hr.vgsoft.cookbook.service.RecipeService;
-import hr.vgsoft.cookbook.service.dto.RecipeWithDetailsDTO;
-import hr.vgsoft.cookbook.service.RecipeService;
 import hr.vgsoft.cookbook.service.dto.DetailsDTO;
 import hr.vgsoft.cookbook.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -33,7 +31,7 @@ public class RecipeResource {
 
     private final Logger log = LoggerFactory.getLogger(RecipeResource.class);
 
-    private static final String ENTITY_NAME = "recipe";
+    private static final String ENTITY_NAME_RECIPE = "recipe";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -42,10 +40,6 @@ public class RecipeResource {
     private final RecipeService recipeService;
 
     public RecipeResource(RecipeRepository recipeRepository, RecipeService recipeService) {
-    private final RecipeService recipeService;
-
-    public RecipeResource(RecipeRepository recipeRepository,
-        RecipeService recipeService) {
         this.recipeRepository = recipeRepository;
         this.recipeService = recipeService;
     }
@@ -53,18 +47,26 @@ public class RecipeResource {
     /**
      * {@code POST  /recipes} : Create a new recipe.
      *
-     * @param recipeWithDetailsDTO the recipe to create.
+     * @param detailsDTO dto with selected fields to be exposed.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new recipe, or with status {@code 400 (Bad Request)} if the recipe has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/recipes")
-    public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody RecipeWithDetailsDTO recipeWithDetailsDTO) throws URISyntaxException {
-        log.debug("REST request to save Recipe : {}", recipeWithDetailsDTO);
-        Recipe result = recipeService.createNewRecipe(recipeWithDetailsDTO);
+    public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody DetailsDTO detailsDTO) throws URISyntaxException {
+        log.debug("REST request to save Recipe : {}", detailsDTO);
+        if (detailsDTO.getId() != null) {
+            throw new BadRequestAlertException("A new recipe cannot already have an ID",
+                ENTITY_NAME_RECIPE, "idexists");
+        }
+        if (detailsDTO == null) {
+            throw new BadRequestAlertException("Recipe cannot be null!", ENTITY_NAME_RECIPE, "newrecipeisnull");
+        }
+        Recipe result = recipeService.processAndSave(detailsDTO);
         return ResponseEntity
-            .created(new URI("/api/recipes/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+            .created(new URI("/api/recipes" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME_RECIPE, result.getId().toString()))
             .body(result);
+
     }
 
 
@@ -85,20 +87,20 @@ public class RecipeResource {
     ) throws URISyntaxException {
         log.debug("REST request to update Recipe : {}, {}", id, recipe);
         if (recipe.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME_RECIPE, "idnull");
         }
         if (!Objects.equals(id, recipe.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME_RECIPE, "idinvalid");
         }
 
         if (!recipeRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME_RECIPE, "idnotfound");
         }
 
         Recipe result = recipeRepository.save(recipe);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, recipe.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME_RECIPE, recipe.getId().toString()))
             .body(result);
     }
 
@@ -120,14 +122,14 @@ public class RecipeResource {
     ) throws URISyntaxException {
         log.debug("REST request to partial update Recipe partially : {}, {}", id, recipe);
         if (recipe.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME_RECIPE, "idnull");
         }
         if (!Objects.equals(id, recipe.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME_RECIPE, "idinvalid");
         }
 
         if (!recipeRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME_RECIPE, "idnotfound");
         }
 
         Optional<Recipe> result = recipeRepository
@@ -146,7 +148,8 @@ public class RecipeResource {
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, recipe.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true,
+                ENTITY_NAME_RECIPE, recipe.getId().toString())
         );
     }
 
@@ -175,19 +178,6 @@ public class RecipeResource {
     }
 
     /**
-     * {@code GET  /recipes/:id/details} : get the "id" recipe with details.
-     *
-     * @param id the id of the recipe to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the recipe with details, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/recipes/{id}/details")
-    public ResponseEntity<RecipeWithDetailsDTO> getRecipeWithDetails(@PathVariable Long id) {
-        log.debug("REST request to get Recipe with details : {}", id);
-        Optional<RecipeWithDetailsDTO> recipe = recipeService.getRecipeWithDetails(id);
-        return ResponseUtil.wrapOrNotFound(recipe);
-    }
-
-    /**
      * {@code DELETE  /recipes/:id} : delete the "id" recipe.
      *
      * @param id the id of the recipe to delete.
@@ -199,7 +189,7 @@ public class RecipeResource {
         recipeRepository.deleteById(id);
         return ResponseEntity
             .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME_RECIPE, id.toString()))
             .build();
     }
 
@@ -215,5 +205,4 @@ public class RecipeResource {
         Optional<DetailsDTO> detailsDTO = recipeService.retrieveReceiptWithAllDetails(id);
         return ResponseUtil.wrapOrNotFound(detailsDTO);
     }
-
 }

@@ -7,6 +7,13 @@ import java.util.Set;
 
 public class DetailsDTO {
 
+    public DetailsDTO(String name, String description,
+        Set<IngredientForRecipeDTO> ingredientForRecipes) {
+        this.name = name;
+        this.description = description;
+        this.ingredientForRecipes = ingredientForRecipes;
+    }
+
     private Long id;
     private String name;
     private String description;
@@ -19,6 +26,8 @@ public class DetailsDTO {
         this.ingredientForRecipes = fillInIngredients(recipe);
     }
 
+    public DetailsDTO() {
+    }
 
     private HashSet<IngredientForRecipeDTO> fillInIngredients(Recipe recipe) {
         HashSet<IngredientForRecipeDTO> ingredientForRecipeDTOS = new HashSet<>();
