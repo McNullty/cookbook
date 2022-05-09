@@ -5,10 +5,9 @@ import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './recipes.reducer';
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
-export const RecipeWithDetail = (props: RouteComponentProps<{ id: string }>) => {
+export const RecipeWithDetails = (props: RouteComponentProps<{ id: string }>) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -99,4 +98,4 @@ export const RecipeWithDetail = (props: RouteComponentProps<{ id: string }>) => 
   );
 };
 
-export default RecipeWithDetail;
+export default RecipeWithDetails;

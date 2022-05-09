@@ -4,16 +4,16 @@ import { Button, Table } from 'reactstrap';
 import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { getEntities } from '../../entities/recipe/recipe.reducer';
 import { IRecipe } from 'app/shared/model/recipe.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import {getEntities} from "app/modules/recipes/recipes.reducer";
 
 export const Recipe = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch();
 
-  const recipeList = useAppSelector(state => state.recipe.entities);
-  const loading = useAppSelector(state => state.recipe.loading);
+  const recipeList = useAppSelector(state => state.recipeWithDetail.entities);
+  const loading = useAppSelector(state => state.recipeWithDetail.loading);
 
   useEffect(() => {
     dispatch(getEntities({}));
