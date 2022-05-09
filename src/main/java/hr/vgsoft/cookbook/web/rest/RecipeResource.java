@@ -49,22 +49,20 @@ public class RecipeResource {
     /**
      * {@code POST  /recipes} : Create a new recipe.
      *
-     * @param recipe the recipe to create.
+     * @param recipeWithDetailsDTO the recipe to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new recipe, or with status {@code 400 (Bad Request)} if the recipe has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/recipes")
-    public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody Recipe recipe) throws URISyntaxException {
-        log.debug("REST request to save Recipe : {}", recipe);
-        if (recipe.getId() != null) {
-            throw new BadRequestAlertException("A new recipe cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        Recipe result = recipeRepository.save(recipe);
+    public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody RecipeWithDetailsDTO recipeWithDetailsDTO) throws URISyntaxException {
+        log.debug("REST request to save Recipe : {}", recipeWithDetailsDTO);
+        Recipe result = recipeService.createNewRecipe(recipeWithDetailsDTO);
         return ResponseEntity
             .created(new URI("/api/recipes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+
 
     /**
      * {@code PUT  /recipes/:id} : Updates an existing recipe.
