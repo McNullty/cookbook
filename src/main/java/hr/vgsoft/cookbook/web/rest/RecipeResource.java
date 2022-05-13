@@ -77,24 +77,24 @@ public class RecipeResource {
     @PutMapping("/recipes/{id}")
     public ResponseEntity<Recipe> updateRecipe(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Recipe recipe
+        @Valid @RequestBody RecipeWithDetailsDTO recipeWithDetailsDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Recipe : {}, {}", id, recipe);
-        if (recipe.getId() == null) {
+        log.debug("REST request to update Recipe : {}, {}", id, recipeWithDetailsDTO);
+/*        if (recipeWithDetailsDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, recipe.getId())) {
+        if (!Objects.equals(id, recipeWithDetailsDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
+        }*/
 
         if (!recipeRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Recipe result = recipeRepository.save(recipe);
+        Recipe result = recipeService.updateRecipe(recipeWithDetailsDTO, id);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, recipe.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
