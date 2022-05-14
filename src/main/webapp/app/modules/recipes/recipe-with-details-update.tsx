@@ -22,9 +22,15 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
   const ingredients = useAppSelector(state => state.ingredient.entities);
   const units = useAppSelector(state => state.unit.entities);
 
+  const [recipeItems, setRecipeItems] = useState(recipeEntity?.recipeItems);
+
   const handleClose = () => {
     props.history.push('/recipes');
   };
+
+  useEffect(() => {
+    setRecipeItems(recipeEntity?.recipeItems);
+  }, [recipeEntity]);
 
   useEffect(() => {
     if (isNew) {
@@ -48,6 +54,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
     const entity = {
       ...recipeEntity,
       ...values,
+      id: props.match.params.id
     };
 
     if (isNew) {
@@ -94,7 +101,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
               {/* Ingidients */}
 
               <div className="table-responsive">
-                {recipeEntity.recipeItems && recipeEntity.recipeItems.length > 0 ? (
+                {recipeItems && recipeItems.length > 0 ? (
                   <Table responsive>
                     <thead>
                     <tr>
@@ -111,11 +118,57 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                     </tr>
                     </thead>
                     <tbody>
-                    {recipeEntity.recipeItems.map((recipeItem, i) => (
+                    {recipeItems.map((recipeItem, i) => (
                       <tr key={`entity-${i}`} data-cy="entityTable">
-                        <td>{recipeItem.ingredient}</td>
-                        <td>{recipeItem.quantity}</td>
-                        <td>{recipeItem.unit}</td>
+                        <td>
+                          <ValidatedField
+                            id={`ingredient-for-recipe-ingredient-${i}`}
+                            name={`recipeItems[${i}].ingredient`}
+                            data-cy={`recipeItems[${i}].ingredient`}
+                            type="select"
+                            defaultValue={recipeItem.ingredient}
+                            required
+                          >
+                            {ingredients
+                              ? ingredients.map(otherEntity => (
+                                <option value={otherEntity.name} key={otherEntity.id} >
+                                  {otherEntity.name}
+                                </option>
+                              ))
+                              : null}
+                          </ValidatedField>
+                        </td>
+                        <td>
+                          <ValidatedField
+                            id={`ingredient-for-recipe-quantity-${i}`}
+                            name={`recipeItems[${i}].quantity`}
+                            data-cy={`recipeItems[${i}].quantity`}
+                            type="text"
+                            defaultValue={recipeItem.quantity}
+                            validate={{
+                              required: { value: true, message: translate('entity.validation.required') },
+                              validate: v => isNumber(v) || translate('entity.validation.number'),
+                            }}
+                          />
+                        </td>
+                        <td>
+                          <ValidatedField
+                            id={`ingredient-for-recipe-unit-${i}`}
+                            name={`recipeItems[${i}].unit`}
+                            data-cy={`recipeItems[${i}].unit`}
+                            type="select"
+                            defaultValue={recipeItem.unit}
+                            required
+                          >
+                            {units
+                              ? units.map(otherEntity => (
+                                <option value={otherEntity.name} key={otherEntity.id}>
+                                  {otherEntity.name}
+                                </option>
+                              ))
+                              : null}
+                          </ValidatedField>
+                        </td>
                       </tr>
                     ))}
                     </tbody>
