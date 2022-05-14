@@ -71,6 +71,10 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
           ...recipeEntity,
       };
 
+  const handleAddIngredient = () => {
+    setRecipeItems([...recipeItems, {ingredient: "", quantity: null, unit: ""}])
+  }
+
   return (
     <div>
       <Row className="justify-content-center">
@@ -129,6 +133,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                             defaultValue={recipeItem.ingredient}
                             required
                           >
+                            <option value="" key="0" />
                             {ingredients
                               ? ingredients.map(otherEntity => (
                                 <option value={otherEntity.name} key={otherEntity.id} >
@@ -160,6 +165,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                             defaultValue={recipeItem.unit}
                             required
                           >
+                            <option value="" key="0" />
                             {units
                               ? units.map(otherEntity => (
                                 <option value={otherEntity.name} key={otherEntity.id}>
@@ -182,7 +188,13 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                 )}
               </div>
 
-              {/* Ingidients */}
+              <Button color="primary" id="save-ingredient" data-cy="ingredientAddButton" type="button"  onClick={handleAddIngredient}>
+                <FontAwesomeIcon icon="save" />
+                &nbsp;
+                Add
+              </Button>
+
+              {/* Ingredients */}
 
               <ValidatedField
                 label={translate('cookbookApp.recipe.description')}
