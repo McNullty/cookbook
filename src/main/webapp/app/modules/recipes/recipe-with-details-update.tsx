@@ -15,13 +15,15 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
 
   const [isNew] = useState(!props.match.params || !props.match.params.id);
 
+  const ingredients = useAppSelector(state => state.ingredient.entities);
+  const ingredientsLoading = useAppSelector(state => state.ingredient.loading);
+  const units = useAppSelector(state => state.unit.entities);
+  const unitsLoading = useAppSelector(state => state.unit.loading);
+
   const recipeEntity = useAppSelector(state => state.recipeWithDetail.entity);
   const loading = useAppSelector(state => state.recipeWithDetail.loading);
   const updating = useAppSelector(state => state.recipeWithDetail.updating);
   const updateSuccess = useAppSelector(state => state.recipeWithDetail.updateSuccess);
-
-  const ingredients = useAppSelector(state => state.ingredient.entities);
-  const units = useAppSelector(state => state.unit.entities);
 
   const [recipeItems, setRecipeItems] = useState([]);
 
@@ -98,7 +100,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
       </Row>
       <Row className="justify-content-center">
         <Col md="8">
-          {loading ? (
+          {loading || ingredientsLoading || unitsLoading ? (
             <p>Loading...</p>
           ) : (
             <ValidatedForm defaultValues={defaultValues()} onSubmit={saveEntity}>
