@@ -75,6 +75,12 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
     setRecipeItems([...recipeItems, {ingredient: "", quantity: null, unit: ""}])
   }
 
+  const handleRemoveIngredient = (index: number) => {
+    const newList = recipeItems.filter((el, i) => i !== index);
+
+    setRecipeItems(newList);
+  }
+
   return (
     <div>
       <Row className="justify-content-center">
@@ -175,6 +181,13 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                               : null}
                           </ValidatedField>
                         </td>
+                        <td>
+                          <Button color="primary" id="remove-ingredient" data-cy="ingredientRemoveButton" type="button"  onClick={() => handleRemoveIngredient(i)}>
+                            <FontAwesomeIcon icon="eraser" />
+                            &nbsp;
+                            Remove
+                          </Button>
+                        </td>
                       </tr>
                     ))}
                     </tbody>
@@ -188,7 +201,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                 )}
               </div>
 
-              <Button color="primary" id="save-ingredient" data-cy="ingredientAddButton" type="button"  onClick={handleAddIngredient}>
+              <Button color="primary" id="add-ingredient" data-cy="ingredientAddButton" type="button"  onClick={handleAddIngredient}>
                 <FontAwesomeIcon icon="save" />
                 &nbsp;
                 Add
