@@ -8,6 +8,7 @@ import { getEntity, updateEntity, createEntity, reset } from './recipes.reducer'
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import {getEntities as getIngredients} from "app/entities/ingredient/ingredient.reducer";
 import {getEntities as getUnits} from "app/entities/unit/unit.reducer";
+import { v4 as uuidv4 } from 'uuid';
 
 export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string }>) => {
   const dispatch = useAppDispatch();
@@ -22,14 +23,19 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
   const ingredients = useAppSelector(state => state.ingredient.entities);
   const units = useAppSelector(state => state.unit.entities);
 
-  const [recipeItems, setRecipeItems] = useState(recipeEntity?.recipeItems);
+  const [recipeItems, setRecipeItems] = useState([]);
 
   const handleClose = () => {
     props.history.push('/recipes');
   };
 
   useEffect(() => {
-    setRecipeItems(recipeEntity?.recipeItems);
+    if (recipeEntity?.recipeItems !== undefined) {
+      const recipeItemsWithIds = recipeEntity.recipeItems.map(
+        (element) => {return {...element, id: uuidv4()}});
+
+      setRecipeItems(recipeItemsWithIds);
+    }
   }, [recipeEntity]);
 
   useEffect(() => {
@@ -72,7 +78,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
       };
 
   const handleAddIngredient = () => {
-    setRecipeItems([...recipeItems, {ingredient: "", quantity: null, unit: ""}])
+    setRecipeItems([...recipeItems, {id: uuidv4(), ingredient: "", quantity: null, unit: ""}])
   }
 
   const handleRemoveIngredient = (index: number) => {
@@ -129,7 +135,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                     </thead>
                     <tbody>
                     {recipeItems.map((recipeItem, i) => (
-                      <tr key={`entity-${i}`} data-cy="entityTable">
+                      <tr key={`recipeItem-${recipeItem.id}`} data-cy="recipeItemTable">
                         <td>
                           <ValidatedField
                             id={`ingredient-for-recipe-ingredient-${i}`}
@@ -183,7 +189,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                         </td>
                         <td>
                           <Button color="primary" id="remove-ingredient" data-cy="ingredientRemoveButton" type="button"  onClick={() => handleRemoveIngredient(i)}>
-                            <FontAwesomeIcon icon="eraser" />
+                            <FontAwesomeIcon icon="save" />
                             &nbsp;
                             Remove
                           </Button>
