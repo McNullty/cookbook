@@ -105,6 +105,7 @@ public class RecipeService {
                         log.debug("quantity is changed");
                     }
                     ingredientIsFound = true;
+                    break;
                 }
             }
             if (!ingredientIsFound) {
@@ -118,13 +119,24 @@ public class RecipeService {
             }
         }
 
+        List<IngredientForRecipe> ingredientForRecipeForDelete = new ArrayList<>();
+
         for (IngredientForRecipe ingredientForExistingRecipe : ingredientsForExistingRecipe) {
+            boolean ingredientNotFound=true;
             for (RecipeItemsDTO recipeItemDTO : recipeItemsDTOs) {
-                if (!ingredientRepository.findByName(recipeItemDTO.getIngredient()).equals(ingredientForExistingRecipe.getIngredient()))  {
-                    existingRecipe.removeIngredientForRecipe(ingredientForExistingRecipe);
+                if (ingredientRepository.findByName(recipeItemDTO.getIngredient()).equals(ingredientForExistingRecipe.getIngredient()))  {
+                    ingredientNotFound=false;
+                    break;
                 }
             }
+            if (ingredientNotFound)
+            ingredientForRecipeForDelete.add(ingredientForExistingRecipe);
         }
+
+        for (IngredientForRecipe ingredientForRecipe : ingredientForRecipeForDelete) {
+            existingRecipe.removeIngredientForRecipe(ingredientForRecipe);
+        }
+
         Recipe result = recipeRepository.save(existingRecipe);
 
         return result;
