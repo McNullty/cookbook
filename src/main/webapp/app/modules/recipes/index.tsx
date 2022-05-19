@@ -6,6 +6,7 @@ import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 import Recipes from "app/modules/recipes/recipes";
 import RecipeWithDetails from "app/modules/recipes/recipe-with-details";
 import {RecipeWithDetailsUpdate} from "app/modules/recipes/recipe-with-details-update";
+import RecipeWithDetailsDeleteDialog from "app/modules/recipes/recipe-with-detail-delete-dialog";
 
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
@@ -19,6 +20,7 @@ const Routes = ({ match }) => (
       <ErrorBoundaryRoute path={`${match.url}`} component={Recipes}  />
       {/* jhipster-needle-add-route-path - JHipster will add routes here */}
     </Switch>
+    <ErrorBoundaryRoute exact path={`${match.url}/:id/delete`} component={RecipeWithDetailsDeleteDialog} />
   </div>
 );
 
