@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Row, Col, FormText, Table } from 'reactstrap';
+import { Button, Row, Col, FormText, Table, Form, Input, FormGroup, Label } from 'reactstrap';
 import { isNumber, Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -9,9 +9,15 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import {getEntities as getIngredients} from "app/entities/ingredient/ingredient.reducer";
 import {getEntities as getUnits} from "app/entities/unit/unit.reducer";
 import { v4 as uuidv4 } from 'uuid';
+import {IRecipeWithDetails} from "app/shared/model/recipe-with-details.model";
+import {Controller, useFieldArray, useForm } from 'react-hook-form';
 
 export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string }>) => {
   const dispatch = useAppDispatch();
+
+  const {register, handleSubmit, formState: { errors }, control, setValue } = useForm<IRecipeWithDetails>();
+
+  const {fields, append, remove} = useFieldArray({control, name: "recipeItems"});
 
   const [isNew] = useState(!props.match.params || !props.match.params.id);
 
@@ -25,19 +31,14 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
   const updating = useAppSelector(state => state.recipeWithDetail.updating);
   const updateSuccess = useAppSelector(state => state.recipeWithDetail.updateSuccess);
 
-  const [recipeItems, setRecipeItems] = useState([]);
-
   const handleClose = () => {
     props.history.push('/recipes');
   };
 
   useEffect(() => {
-    if (recipeEntity?.recipeItems !== undefined) {
-      const recipeItemsWithIds = recipeEntity.recipeItems.map(
-        (element) => {return {...element, id: uuidv4()}});
-
-      setRecipeItems(recipeItemsWithIds);
-    }
+    setValue("name", recipeEntity.name);
+    setValue("description", recipeEntity.description);
+    setValue("recipeItems", recipeEntity.recipeItems);
   }, [recipeEntity]);
 
   useEffect(() => {
@@ -79,15 +80,9 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
           ...recipeEntity,
       };
 
-  const handleAddIngredient = () => {
-    setRecipeItems([...recipeItems, {id: uuidv4(), ingredient: "", quantity: null, unit: ""}])
-  }
-
-  const handleRemoveIngredient = (index: number) => {
-    const newList = recipeItems.filter((el, i) => i !== index);
-
-    setRecipeItems(newList);
-  }
+  const onSubmit = (data: IRecipeWithDetails) => {
+    console.error("data", data);
+  };
 
   return (
     <div>
@@ -103,49 +98,47 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
           {loading || ingredientsLoading || unitsLoading ? (
             <p>Loading...</p>
           ) : (
-            <ValidatedForm defaultValues={defaultValues()} onSubmit={saveEntity}>
-              <ValidatedField
-                label={translate('cookbookApp.recipe.name')}
-                id="recipe-name"
-                name="name"
-                data-cy="name"
-                type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                }}
-              />
-
-
-              {/* Ingidients */}
-
-              <div className="table-responsive">
-                {recipeItems && recipeItems.length > 0 ? (
-                  <Table responsive>
-                    <thead>
-                    <tr>
-                      <th>
-                        <Translate contentKey="cookbookApp.recipe.ingredientName">Name</Translate>
-                      </th>
-                      <th>
-                        <Translate contentKey="cookbookApp.recipe.ingredientQuantity">Quantity</Translate>
-                      </th>
-                      <th>
-                        <Translate contentKey="cookbookApp.recipe.ingredientUnit">Unit</Translate>
-                      </th>
-                      <th />
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {recipeItems.map((recipeItem, i) => (
-                      <tr key={`recipeItem-${recipeItem.id}`} data-cy="recipeItemTable">
-                        <td>
-                          <ValidatedField
-                            id={`ingredient-for-recipe-ingredient-${i}`}
-                            name={`recipeItems[${i}].ingredient`}
-                            data-cy={`recipeItems[${i}].ingredient`}
+            <Form onSubmit={handleSubmit(onSubmit)}>
+              <FormGroup row>
+                <Label for="name">Name</Label>
+                <Controller
+                  defaultValue={recipeEntity.description}
+                  name="name"
+                  control={control}
+                  render = {({ field }) =>(
+                  <Input
+                    type="text"
+                    {...field}
+                  />
+                )}/>
+              </FormGroup>
+              <Table responsive>
+                <thead>
+                <tr>
+                  <th>
+                    <Translate contentKey="cookbookApp.recipe.ingredientName">Name</Translate>
+                  </th>
+                  <th>
+                    <Translate contentKey="cookbookApp.recipe.ingredientQuantity">Quantity</Translate>
+                  </th>
+                  <th>
+                    <Translate contentKey="cookbookApp.recipe.ingredientUnit">Unit</Translate>
+                  </th>
+                  <th />
+                </tr>
+                </thead>
+                <tbody>
+                {fields.map((field, index) => (
+                  <tr key={field.id}>
+                    <td scope="row">
+                      <Controller
+                        defaultValue = {field.ingredient}
+                        name={`recipeItems.${index}.ingredient`}
+                        control={control}
+                        render = {({ field: renderField }) =>(
+                          <Input
                             type="select"
-                            defaultValue={recipeItem.ingredient}
-                            required
+                            {...renderField}
                           >
                             <option value="" key="0" />
                             {ingredients
@@ -155,29 +148,30 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                                 </option>
                               ))
                               : null}
-                          </ValidatedField>
-                        </td>
-                        <td>
-                          <ValidatedField
-                            id={`ingredient-for-recipe-quantity-${i}`}
-                            name={`recipeItems[${i}].quantity`}
-                            data-cy={`recipeItems[${i}].quantity`}
-                            type="text"
-                            defaultValue={recipeItem.quantity}
-                            validate={{
-                              required: { value: true, message: translate('entity.validation.required') },
-                              validate: v => isNumber(v) || translate('entity.validation.number'),
-                            }}
+                          </Input>
+                        )}/>
+                    </td>
+                    <td scope="row">
+                      <Controller
+                        defaultValue = {field.quantity}
+                        name={`recipeItems.${index}.quantity`}
+                        control={control}
+                        render = {({ field: renderField }) =>(
+                          <Input
+                            type="number"
+                            {...renderField}
                           />
-                        </td>
-                        <td>
-                          <ValidatedField
-                            id={`ingredient-for-recipe-unit-${i}`}
-                            name={`recipeItems[${i}].unit`}
-                            data-cy={`recipeItems[${i}].unit`}
+                        )}/>
+                    </td>
+                    <td scope="row">
+                      <Controller
+                        defaultValue = {field.unit}
+                        name={`recipeItems.${index}.unit`}
+                        control={control}
+                        render = {({ field: renderField }) =>(
+                          <Input
                             type="select"
-                            defaultValue={recipeItem.unit}
-                            required
+                            {...renderField}
                           >
                             <option value="" key="0" />
                             {units
@@ -187,58 +181,41 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                                 </option>
                               ))
                               : null}
-                          </ValidatedField>
-                        </td>
-                        <td>
-                          <Button color="primary" id="remove-ingredient" data-cy="ingredientRemoveButton" type="button"  onClick={() => handleRemoveIngredient(i)}>
-                            <FontAwesomeIcon icon="save" />
-                            &nbsp;
-                            Remove
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                    </tbody>
-                  </Table>
-                ) : (
-                  !loading && (
-                    <div className="alert alert-warning">
-                      <Translate contentKey="cookbookApp.recipe.home.notFound">No ingredients found</Translate>
-                    </div>
-                  )
-                )}
-              </div>
+                          </Input>
+                        )}/>
+                    </td>
+                    <td>
+                      <Button
+                        color="primary"
+                        outline
+                        type="button"
+                        onClick = {() => remove(index)}>Delete</Button>
+                    </td>
+                  </tr>
+                ))}
+                </tbody>
+              </Table>
 
-              <Button color="primary" id="add-ingredient" data-cy="ingredientAddButton" type="button"  onClick={handleAddIngredient}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
-                Add
-              </Button>
-
-              {/* Ingredients */}
-
-              <ValidatedField
-                label={translate('cookbookApp.recipe.description')}
-                id="recipe-description"
-                name="description"
-                data-cy="description"
-                type="text"
-              />
-
-              <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/recipes" replace color="info">
-                <FontAwesomeIcon icon="arrow-left" />
-                &nbsp;
-                <span className="d-none d-md-inline">
-                  <Translate contentKey="entity.action.back">Back</Translate>
-                </span>
-              </Button>
-              &nbsp;
-              <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
-                <FontAwesomeIcon icon="save" />
-                &nbsp;
-                <Translate contentKey="entity.action.save">Save</Translate>
-              </Button>
-            </ValidatedForm>
+              <Button
+                color="primary"
+                outline
+                type="button"
+                onClick = {() => append({})}>Add</Button>
+              <FormGroup row>
+                <Label for="description">Description</Label>
+                <Controller
+                  defaultValue={recipeEntity.description}
+                  name="description"
+                  control={control}
+                  render = {({ field }) =>(
+                    <Input
+                      type="text"
+                      {...field}
+                    />
+                )}/>
+              </FormGroup>
+              <Button color="primary" type="submit">Save</Button>
+            </Form>
           )}
         </Col>
       </Row>
