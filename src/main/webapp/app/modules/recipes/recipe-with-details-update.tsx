@@ -8,14 +8,13 @@ import { getEntity, updateEntity, createEntity, reset } from './recipes.reducer'
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import {getEntities as getIngredients} from "app/entities/ingredient/ingredient.reducer";
 import {getEntities as getUnits} from "app/entities/unit/unit.reducer";
-import { v4 as uuidv4 } from 'uuid';
 import {IRecipeWithDetails} from "app/shared/model/recipe-with-details.model";
 import {Controller, useFieldArray, useForm } from 'react-hook-form';
 
 export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string }>) => {
   const dispatch = useAppDispatch();
 
-  const {register, handleSubmit, formState: { errors }, control, setValue } = useForm<IRecipeWithDetails>();
+  const {handleSubmit, formState: { errors }, control, setValue } = useForm<IRecipeWithDetails>();
 
   const {fields, append, remove} = useFieldArray({control, name: "recipeItems"});
 
@@ -59,11 +58,11 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
     }
   }, [updateSuccess]);
 
-  const saveEntity = values => {
+  const saveEntity = (values: IRecipeWithDetails) => {
     const entity = {
       ...recipeEntity,
       ...values,
-      id: props.match.params.id
+      id: parseInt(props.match.params.id, 10)
     };
 
     if (isNew) {
@@ -71,17 +70,6 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
     } else {
       dispatch(updateEntity(entity));
     }
-  };
-
-  const defaultValues = () =>
-    isNew
-      ? {}
-      : {
-          ...recipeEntity,
-      };
-
-  const onSubmit = (data: IRecipeWithDetails) => {
-    console.error("data", data);
   };
 
   return (
@@ -98,7 +86,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
           {loading || ingredientsLoading || unitsLoading ? (
             <p>Loading...</p>
           ) : (
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form onSubmit={handleSubmit(saveEntity)}>
               <FormGroup row>
                 <Label for="name">Name</Label>
                 <Controller
@@ -158,7 +146,11 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                         control={control}
                         render = {({ field: renderField }) =>(
                           <Input
-                            type="number"
+                            type="text"
+                            validate={{
+                              required: { value: true, message: translate('entity.validation.required') },
+                              validate: v => isNumber(v) || translate('entity.validation.number'),
+                            }}
                             {...renderField}
                           />
                         )}/>
@@ -214,7 +206,7 @@ export const RecipeWithDetailsUpdate = (props: RouteComponentProps<{ id: string 
                     />
                 )}/>
               </FormGroup>
-              <Button color="primary" type="submit">Save</Button>
+              <Button color="primary" type="submit" disabled={updating} >Save</Button>
             </Form>
           )}
         </Col>
