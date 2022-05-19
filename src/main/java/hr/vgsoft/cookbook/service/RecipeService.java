@@ -74,4 +74,71 @@ public class RecipeService {
 
         return result;
     }
+
+    public Recipe updateRecipe(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
+
+        Recipe existingRecipe = recipeRepository.getById(id);
+        if (!existingRecipe.getName().equals(recipeWithDetailsDTO.getName())) {
+            existingRecipe.setName(recipeWithDetailsDTO.getName());
+            log.debug("name of recipe is changed");
+        } else log.debug("name of recipe is the same");
+        if (!existingRecipe.getDescription().equals(recipeWithDetailsDTO.getDescription())) {
+            existingRecipe.setDescription(recipeWithDetailsDTO.getDescription());
+            log.debug("description of recipe is changed");
+        } else log.debug("description of recipe is the same");
+
+        List<RecipeItemsDTO> recipeItemsDTOs = recipeWithDetailsDTO.getRecipeItems();
+        Set<IngredientForRecipe> ingredientsForExistingRecipe= existingRecipe.getIngredientForRecipes();
+
+        for (RecipeItemsDTO recipeItemDTO : recipeItemsDTOs) {
+            boolean ingredientIsFound=false;
+            for (IngredientForRecipe ingredientForExistingRecipe : ingredientsForExistingRecipe) {
+                log.debug("Comparing each ingredientForRecipe from new Recipe with each ingredientForRecipe from old Recipe");
+                if (ingredientRepository.findByName(recipeItemDTO.getIngredient()).equals(ingredientForExistingRecipe.getIngredient())) {
+                    log.debug("ingredient is the same");
+                    if (!unitRepository.findByName(recipeItemDTO.getUnit()).equals(ingredientForExistingRecipe.getUnit())) {
+                        ingredientForExistingRecipe.setUnit(unitRepository.findByName(recipeItemDTO.getUnit()));
+                        log.debug("unit is changed");
+                    }
+                    if (recipeItemDTO.getQuantity()!=ingredientForExistingRecipe.getQuantity()) {
+                        ingredientForExistingRecipe.setQuantity(recipeItemDTO.getQuantity());
+                        log.debug("quantity is changed");
+                    }
+                    ingredientIsFound = true;
+                    break;
+                }
+            }
+            if (!ingredientIsFound) {
+                log.debug("add new ingredient");
+                    IngredientForRecipe ingredientForRecipe = new IngredientForRecipe();
+                    ingredientForRecipe.setIngredient(ingredientRepository.findByName(recipeItemDTO.getIngredient()));
+                    ingredientForRecipe.setUnit(unitRepository.findByName(recipeItemDTO.getUnit()));
+                    ingredientForRecipe.setQuantity(recipeItemDTO.getQuantity());
+                    ingredientForRecipe.setRecipe(existingRecipe);
+                    ingredientsForExistingRecipe.add(ingredientForRecipeRepository.save(ingredientForRecipe));
+            }
+        }
+
+        List<IngredientForRecipe> ingredientForRecipeForDelete = new ArrayList<>();
+
+        for (IngredientForRecipe ingredientForExistingRecipe : ingredientsForExistingRecipe) {
+            boolean ingredientNotFound=true;
+            for (RecipeItemsDTO recipeItemDTO : recipeItemsDTOs) {
+                if (ingredientRepository.findByName(recipeItemDTO.getIngredient()).equals(ingredientForExistingRecipe.getIngredient()))  {
+                    ingredientNotFound=false;
+                    break;
+                }
+            }
+            if (ingredientNotFound)
+            ingredientForRecipeForDelete.add(ingredientForExistingRecipe);
+        }
+
+        for (IngredientForRecipe ingredientForRecipe : ingredientForRecipeForDelete) {
+            existingRecipe.removeIngredientForRecipe(ingredientForRecipe);
+        }
+
+        Recipe result = recipeRepository.save(existingRecipe);
+
+        return result;
+    }
 }
