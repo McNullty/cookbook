@@ -1,7 +1,9 @@
 package hr.vgsoft.cookbook.service;
 
+import hr.vgsoft.cookbook.domain.Ingredient;
 import hr.vgsoft.cookbook.domain.IngredientForRecipe;
 import hr.vgsoft.cookbook.domain.Recipe;
+import hr.vgsoft.cookbook.domain.Unit;
 import hr.vgsoft.cookbook.repository.IngredientForRecipeRepository;
 import hr.vgsoft.cookbook.repository.IngredientRepository;
 import hr.vgsoft.cookbook.repository.RecipeRepository;
@@ -11,6 +13,8 @@ import hr.vgsoft.cookbook.service.dto.RecipeWithDetailsDTO;
 
 import java.util.*;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -73,6 +77,85 @@ public class RecipeService {
         });
 
         return result;
+    }
+
+    public Recipe updateRecipeMC(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
+        Recipe existingRecipe = recipeRepository.getById(id);
+        existingRecipe.setName(recipeWithDetailsDTO.getName());
+        existingRecipe.setDescription(recipeWithDetailsDTO.getDescription());
+
+        final HashMap<String, IngredientForRecipe> izBaze = new HashMap<>();
+        for (IngredientForRecipe it: existingRecipe.getIngredientForRecipes()) {
+            izBaze.put(it.getIngredient().getName(), it);
+        }
+
+        final HashMap<String, RecipeItemsDTO> novi = new HashMap<>();
+        for (RecipeItemsDTO recipeItemsDTO: recipeWithDetailsDTO.getRecipeItems()) {
+            novi.put(recipeItemsDTO.getIngredient(), recipeItemsDTO);
+        }
+
+        final Set<String> izBazeKeys = izBaze.keySet();
+        final Set<String> noviKeys = novi.keySet();
+
+        final Set<String> zaIzbrisati = izBazeKeys.stream()
+            .filter(it -> !noviKeys.contains(it)).collect(Collectors.toSet());
+
+        final Set<String> zaDodati = noviKeys.stream().filter(it -> !izBazeKeys.contains(it))
+            .collect(Collectors.toSet());
+
+        final Set<String> zaProvjeriti = izBazeKeys.stream().filter(noviKeys::contains)
+            .collect(Collectors.toSet());
+
+        // Dohvat unita koji nam trebaju
+        updatePostojecih(izBaze, novi, zaProvjeriti);
+
+        for (String name: zaIzbrisati) {
+            existingRecipe.removeIngredientForRecipe(izBaze.get(name));
+        }
+
+        final List<String> unitiZaDohvatitiIzBaze = zaDodati.stream().map(it -> novi.get(it).getUnit())
+            .collect(Collectors.toList());
+        final Set<Unit> units = unitRepository.findAllByNameIn(unitiZaDohvatitiIzBaze);
+
+        final List<String> ingredientiZaDohvatiti = zaDodati.stream().map(it -> novi.get(it).getIngredient())
+            .collect(Collectors.toList());
+        final Set<Ingredient> ingredients = ingredientRepository.findAllByNameIn(
+            ingredientiZaDohvatiti);
+        for (String name: zaDodati) {
+            final RecipeItemsDTO recipeItemsDTO = novi.get(name);
+
+            final IngredientForRecipe ingredientForRecipe = new IngredientForRecipe();
+            ingredientForRecipe.setUnit(
+                units.stream()
+                    .filter(it -> it.getName().equals(recipeItemsDTO.getUnit()))
+                    .findFirst().get());
+            ingredientForRecipe.setIngredient(
+                ingredients.stream()
+                    .filter(it -> it.getName().equals(recipeItemsDTO.getIngredient()))
+                    .findFirst().get());
+            ingredientForRecipe.setQuantity(recipeItemsDTO.getQuantity());
+
+            existingRecipe.addIngredientForRecipe(ingredientForRecipe);
+        }
+
+        return recipeRepository.save(existingRecipe);
+    }
+
+    private void updatePostojecih(HashMap<String, IngredientForRecipe> izBaze,
+        HashMap<String, RecipeItemsDTO> novi, Set<String> zaProvjeriti) {
+        final List<String> unitiZaDohvatitiIzBaze = zaProvjeriti.stream().map(it -> novi.get(it).getUnit())
+            .collect(Collectors.toList());
+
+        final Set<Unit> units = unitRepository.findAllByNameIn(unitiZaDohvatitiIzBaze);
+
+        for (String ingredientName : zaProvjeriti) {
+            final IngredientForRecipe ingredientForRecipe = izBaze.get(ingredientName);
+            final RecipeItemsDTO recipeItemsDTO = novi.get(ingredientName);
+
+            ingredientForRecipe.setQuantity(recipeItemsDTO.getQuantity());
+            ingredientForRecipe.setUnit(units.stream()
+                .filter(it -> it.getName().equals(recipeItemsDTO.getUnit())).findFirst().get());
+        }
     }
 
     public Recipe updateRecipe(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {

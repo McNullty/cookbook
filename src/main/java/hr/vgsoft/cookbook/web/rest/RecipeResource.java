@@ -91,7 +91,7 @@ public class RecipeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Recipe result = recipeService.updateRecipe(recipeWithDetailsDTO, id);
+        Recipe result = recipeService.updateRecipeMC(recipeWithDetailsDTO, id);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
