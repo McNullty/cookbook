@@ -98,24 +98,6 @@ class RecipeResourceIT {
 
     @Test
     @Transactional
-    void createRecipeWithExistingId() throws Exception {
-        // Create the Recipe with an existing ID
-        recipe.setId(1L);
-
-        int databaseSizeBeforeCreate = recipeRepository.findAll().size();
-
-        // An entity with an existing ID cannot be created, so this API call must fail
-        restRecipeMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(recipe)))
-            .andExpect(status().isBadRequest());
-
-        // Validate the Recipe in the database
-        List<Recipe> recipeList = recipeRepository.findAll();
-        assertThat(recipeList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
     void checkNameIsRequired() throws Exception {
         int databaseSizeBeforeTest = recipeRepository.findAll().size();
         // set the field null

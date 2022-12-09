@@ -6,11 +6,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.validation.constraints.NotNull;
 
 public class RecipeWithDetailsDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @NotNull
     private final String name;
 
     private final String description;
@@ -50,6 +52,10 @@ public class RecipeWithDetailsDTO implements Serializable {
     }
 
     public List<RecipeItemsDTO> getRecipeItems() {
+        if (recipeItems == null) {
+            return new ArrayList<>();
+        }
+
         return recipeItems;
     }
 }
