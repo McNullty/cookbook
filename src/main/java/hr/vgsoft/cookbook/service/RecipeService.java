@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +83,11 @@ public class RecipeService {
 
     public Recipe updateRecipeMC(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
         Recipe existingRecipe = recipeRepository.getById(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        if (!currentPrincipalName.equals(existingRecipe.getCreatedBy())) {
+            throw new DifferentUserException();
+        }
         existingRecipe.setName(recipeWithDetailsDTO.getName());
         existingRecipe.setDescription(recipeWithDetailsDTO.getDescription());
 

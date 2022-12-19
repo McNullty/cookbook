@@ -17,17 +17,21 @@ public class RecipeWithDetailsDTO implements Serializable {
 
     private final String description;
 
+    private final String created_by;
+
     private List<RecipeItemsDTO> recipeItems;
 
-    public RecipeWithDetailsDTO(String name, String description, List<RecipeItemsDTO> recipeItems){
+    public RecipeWithDetailsDTO(String name, String description,String created_by, List<RecipeItemsDTO> recipeItems){
         this.name=name;
         this.description=description;
+        this.created_by = created_by;
         this.recipeItems=recipeItems;
     }
 
     public RecipeWithDetailsDTO(Recipe recipe) {
         this.name = recipe.getName();
         this.description = recipe.getDescription();
+        this.created_by=recipe.getCreatedBy();
 
         final Set<IngredientForRecipe> ingredientForRecipes = recipe.getIngredientForRecipes();
         ingredientForRecipes.forEach( ingredientForRecipe -> {
@@ -50,6 +54,8 @@ public class RecipeWithDetailsDTO implements Serializable {
     public String getDescription() {
         return description;
     }
+
+    public String getCreated_by() { return created_by; }
 
     public List<RecipeItemsDTO> getRecipeItems() {
         if (recipeItems == null) {

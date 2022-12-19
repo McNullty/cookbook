@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
+
+import hr.vgsoft.cookbook.service.DifferentUserException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -113,6 +115,14 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
             .with(FIELD_ERRORS_KEY, fieldErrors)
             .build();
         return create(ex, problem, request);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Problem> handleDifferentUserException(
+        hr.vgsoft.cookbook.service.DifferentUserException ex,
+        NativeWebRequest request
+    ) {
+        return create(new DifferentUserException(), request);
     }
 
     @ExceptionHandler

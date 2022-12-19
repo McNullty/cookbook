@@ -1,5 +1,5 @@
-id;name;description
-1;Juha;Recept za Juhu
-2;Palačinke;Recept za Palačinke
-3;Sendvič;Recept za sendvič
-4;Salata sa tunom;Recept za salatu
+id;name;description;created_by
+1;Juha;Recept za Juhu;admin
+2;Palačinke;Recept za Palačinke;admin
+3;Sendvič;Recept za sendvič;admin
+4;Salata sa tunom;Recept za salatu;admin

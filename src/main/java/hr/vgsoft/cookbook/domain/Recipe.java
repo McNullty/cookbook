@@ -15,7 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "recipe")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Recipe implements Serializable {
+public class Recipe extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,6 +36,9 @@ public class Recipe implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "ingredient", "unit", "recipe" }, allowSetters = true)
     private Set<IngredientForRecipe> ingredientForRecipes = new HashSet<>();
+
+    public Recipe() {
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
