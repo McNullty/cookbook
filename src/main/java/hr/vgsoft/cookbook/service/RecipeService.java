@@ -14,9 +14,11 @@ import hr.vgsoft.cookbook.service.dto.RecipeWithDetailsDTO;
 import java.util.*;
 
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -79,6 +81,14 @@ public class RecipeService {
         });
 
         return result;
+    }
+
+    public Page<Recipe> getAllRecipe(Integer pageNo, Integer pageSize) {
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+        Page<Recipe> pagedResult = recipeRepository.findAll(paging);
+
+        return pagedResult;
+
     }
 
     public Recipe updateRecipeMC(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
