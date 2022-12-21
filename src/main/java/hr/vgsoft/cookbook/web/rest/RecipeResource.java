@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +69,6 @@ public class RecipeResource {
      * {@code PUT  /recipes/:id} : Updates an existing recipe.
      *
      * @param id the id of the recipe to save.
-     * @param recipe the recipe to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated recipe,
      * or with status {@code 400 (Bad Request)} if the recipe is not valid,
      * or with status {@code 500 (Internal Server Error)} if the recipe couldn't be updated.
@@ -151,10 +151,20 @@ public class RecipeResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of recipes in body.
      */
-    @GetMapping("/recipes")
+/*    @GetMapping("/recipes")
     public List<Recipe> getAllRecipes() {
         log.debug("REST request to get all Recipes");
         return recipeRepository.findAll();
+    }*/
+
+    @GetMapping("/recipes")
+    public Page<Recipe> getAllRecipe(
+        @RequestParam(defaultValue = "0") Integer pageNo,
+        @RequestParam(defaultValue = "2") Integer pageSize)
+    {
+        Page<Recipe> recipeList = recipeService.getAllRecipe(pageNo, pageSize);
+
+        return recipeList;
     }
 
     /**
