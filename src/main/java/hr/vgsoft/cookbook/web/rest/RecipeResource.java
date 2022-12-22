@@ -91,7 +91,7 @@ public class RecipeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Recipe result = recipeService.updateRecipeMC(recipeWithDetailsDTO, id);
+        Recipe result = recipeService.updateRecipe(recipeWithDetailsDTO, id);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -160,10 +160,8 @@ public class RecipeResource {
     @GetMapping("/recipes")
     public Page<Recipe> getAllRecipe(
         @RequestParam(defaultValue = "0") Integer pageNo,
-        @RequestParam(defaultValue = "2") Integer pageSize)
-    {
+        @RequestParam(defaultValue = "2") Integer pageSize) {
         Page<Recipe> recipeList = recipeService.getAllRecipe(pageNo, pageSize);
-
         return recipeList;
     }
 
