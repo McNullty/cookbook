@@ -86,12 +86,11 @@ public class RecipeService {
     public Page<Recipe> getAllRecipe(Integer pageNo, Integer pageSize) {
         Pageable paging = PageRequest.of(pageNo, pageSize);
         Page<Recipe> pagedResult = recipeRepository.findAll(paging);
-
         return pagedResult;
 
     }
 
-    public Recipe updateRecipeMC(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
+    public Recipe updateRecipe(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
         Recipe existingRecipe = recipeRepository.getById(id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
@@ -101,45 +100,44 @@ public class RecipeService {
         existingRecipe.setName(recipeWithDetailsDTO.getName());
         existingRecipe.setDescription(recipeWithDetailsDTO.getDescription());
 
-        final HashMap<String, IngredientForRecipe> izBaze = new HashMap<>();
+        final HashMap<String, IngredientForRecipe> existingIngredientForRecipe = new HashMap<>();
         for (IngredientForRecipe it: existingRecipe.getIngredientForRecipes()) {
-            izBaze.put(it.getIngredient().getName(), it);
+            existingIngredientForRecipe.put(it.getIngredient().getName(), it);
         }
 
-        final HashMap<String, RecipeItemsDTO> novi = new HashMap<>();
+        final HashMap<String, RecipeItemsDTO> newIngredientForRecipe = new HashMap<>();
         for (RecipeItemsDTO recipeItemsDTO: recipeWithDetailsDTO.getRecipeItems()) {
-            novi.put(recipeItemsDTO.getIngredient(), recipeItemsDTO);
+            newIngredientForRecipe.put(recipeItemsDTO.getIngredient(), recipeItemsDTO);
         }
 
-        final Set<String> izBazeKeys = izBaze.keySet();
-        final Set<String> noviKeys = novi.keySet();
+        final Set<String> existingIngredientForRecipeKeys = existingIngredientForRecipe.keySet();
+        final Set<String> newIngredientForRecipeKeys = newIngredientForRecipe.keySet();
 
-        final Set<String> zaIzbrisati = izBazeKeys.stream()
-            .filter(it -> !noviKeys.contains(it)).collect(Collectors.toSet());
+        final Set<String> forDeleting = existingIngredientForRecipeKeys.stream()
+            .filter(it -> !newIngredientForRecipeKeys.contains(it)).collect(Collectors.toSet());
 
-        final Set<String> zaDodati = noviKeys.stream().filter(it -> !izBazeKeys.contains(it))
+        final Set<String> forAdding = newIngredientForRecipeKeys.stream().filter(it -> !existingIngredientForRecipeKeys.contains(it))
             .collect(Collectors.toSet());
 
-        final Set<String> zaProvjeriti = izBazeKeys.stream().filter(noviKeys::contains)
+        final Set<String> forUpdating = existingIngredientForRecipeKeys.stream().filter(newIngredientForRecipeKeys::contains)
             .collect(Collectors.toSet());
 
-        // Dohvat unita koji nam trebaju
-        updatePostojecih(izBaze, novi, zaProvjeriti);
+        updateExisting(existingIngredientForRecipe, newIngredientForRecipe, forUpdating);
 
-        for (String name: zaIzbrisati) {
-            existingRecipe.removeIngredientForRecipe(izBaze.get(name));
+        for (String name: forDeleting) {
+            existingRecipe.removeIngredientForRecipe(existingIngredientForRecipe.get(name));
         }
 
-        final List<String> unitiZaDohvatitiIzBaze = zaDodati.stream().map(it -> novi.get(it).getUnit())
+        final List<String> existingUnits = forAdding.stream().map(it -> newIngredientForRecipe.get(it).getUnit())
             .collect(Collectors.toList());
-        final Set<Unit> units = unitRepository.findAllByNameIn(unitiZaDohvatitiIzBaze);
+        final Set<Unit> units = unitRepository.findAllByNameIn(existingUnits);
 
-        final List<String> ingredientiZaDohvatiti = zaDodati.stream().map(it -> novi.get(it).getIngredient())
+        final List<String> existingIngredients = forAdding.stream().map(it -> newIngredientForRecipe.get(it).getIngredient())
             .collect(Collectors.toList());
         final Set<Ingredient> ingredients = ingredientRepository.findAllByNameIn(
-            ingredientiZaDohvatiti);
-        for (String name: zaDodati) {
-            final RecipeItemsDTO recipeItemsDTO = novi.get(name);
+            existingIngredients);
+        for (String name: forAdding) {
+            final RecipeItemsDTO recipeItemsDTO = newIngredientForRecipe.get(name);
 
             final IngredientForRecipe ingredientForRecipe = new IngredientForRecipe();
             ingredientForRecipe.setUnit(
@@ -158,16 +156,16 @@ public class RecipeService {
         return recipeRepository.save(existingRecipe);
     }
 
-    private void updatePostojecih(HashMap<String, IngredientForRecipe> izBaze,
-        HashMap<String, RecipeItemsDTO> novi, Set<String> zaProvjeriti) {
-        final List<String> unitiZaDohvatitiIzBaze = zaProvjeriti.stream().map(it -> novi.get(it).getUnit())
+    private void updateExisting(HashMap<String, IngredientForRecipe> existingIngredientForRecipe,
+        HashMap<String, RecipeItemsDTO> newIngredientForRecipe, Set<String> forUpdating) {
+        final List<String> existingUnits = forUpdating.stream().map(it -> newIngredientForRecipe.get(it).getUnit())
             .collect(Collectors.toList());
 
-        final Set<Unit> units = unitRepository.findAllByNameIn(unitiZaDohvatitiIzBaze);
+        final Set<Unit> units = unitRepository.findAllByNameIn(existingUnits);
 
-        for (String ingredientName : zaProvjeriti) {
-            final IngredientForRecipe ingredientForRecipe = izBaze.get(ingredientName);
-            final RecipeItemsDTO recipeItemsDTO = novi.get(ingredientName);
+        for (String ingredientName : forUpdating) {
+            final IngredientForRecipe ingredientForRecipe = existingIngredientForRecipe.get(ingredientName);
+            final RecipeItemsDTO recipeItemsDTO = newIngredientForRecipe.get(ingredientName);
 
             ingredientForRecipe.setQuantity(recipeItemsDTO.getQuantity());
             ingredientForRecipe.setUnit(units.stream()
@@ -175,7 +173,7 @@ public class RecipeService {
         }
     }
 
-    public Recipe updateRecipe(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
+    public Recipe updateRecipeMG(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
 
         Recipe existingRecipe = recipeRepository.getById(id);
         if (!existingRecipe.getName().equals(recipeWithDetailsDTO.getName())) {
