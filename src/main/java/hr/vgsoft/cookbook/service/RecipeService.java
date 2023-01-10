@@ -1,13 +1,7 @@
 package hr.vgsoft.cookbook.service;
 
-import hr.vgsoft.cookbook.domain.Ingredient;
-import hr.vgsoft.cookbook.domain.IngredientForRecipe;
-import hr.vgsoft.cookbook.domain.Recipe;
-import hr.vgsoft.cookbook.domain.Unit;
-import hr.vgsoft.cookbook.repository.IngredientForRecipeRepository;
-import hr.vgsoft.cookbook.repository.IngredientRepository;
-import hr.vgsoft.cookbook.repository.RecipeRepository;
-import hr.vgsoft.cookbook.repository.UnitRepository;
+import hr.vgsoft.cookbook.domain.*;
+import hr.vgsoft.cookbook.repository.*;
 import hr.vgsoft.cookbook.service.dto.RecipeItemsDTO;
 import hr.vgsoft.cookbook.service.dto.RecipeWithDetailsDTO;
 
@@ -16,9 +10,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@Configuration
+@EnableScheduling
 public class RecipeService {
 
     private final Logger log = LoggerFactory.getLogger(RecipeService.class);
@@ -38,12 +37,15 @@ public class RecipeService {
 
     private final UnitRepository unitRepository;
 
+    private final RecipeSearchRepository recipeSearchRepository;
+
     public RecipeService(RecipeRepository recipeRepository,
-                         IngredientForRecipeRepository ingredientForRecipeRepository, IngredientRepository ingredientRepository, UnitRepository unitRepository) {
+                         IngredientForRecipeRepository ingredientForRecipeRepository, IngredientRepository ingredientRepository, UnitRepository unitRepository, RecipeSearchRepository recipeSearchRepository) {
         this.recipeRepository = recipeRepository;
         this.ingredientForRecipeRepository = ingredientForRecipeRepository;
         this.ingredientRepository = ingredientRepository;
         this.unitRepository = unitRepository;
+        this.recipeSearchRepository = recipeSearchRepository;
     }
 
     @Transactional(readOnly = true)
@@ -238,5 +240,86 @@ public class RecipeService {
         Recipe result = recipeRepository.save(existingRecipe);
 
         return result;
+    }
+    @Scheduled(fixedDelay = 60000)
+    public void searchIngredientsJob(){
+        
+        for(Recipe recipe : recipeRepository.findAllByProcessed(false)) {
+
+            Set<IngredientForRecipe> ingredientsForRecipe= recipe.getIngredientForRecipes();
+            Iterator<IngredientForRecipe> it = ingredientsForRecipe.iterator();
+            String[] ingredients = new String[ingredientsForRecipe.size()];
+            int k=0;
+            while (it.hasNext()) {
+                String ingredient = it.next().getIngredient().getName();
+                ingredients[k] = ingredient;
+                k++;
+            }
+            //Sort alphabeticaly
+            String temp;
+            for (int i = 0; i < ingredients.length; i++) {
+                for (int j = i + 1; j <ingredients.length ; j++) {
+
+                    if (ingredients[i].compareTo(ingredients[j]) > 0) {
+                        temp = ingredients[i];
+                        ingredients[i] = ingredients[j];
+                        ingredients[j] = temp;
+                    }
+                }
+            }
+            String allIngredientscombination="";
+            for (String ingredient : ingredients) {
+                allIngredientscombination +=ingredient + "," ;
+            }
+            RecipeSearch recipeSearch = new RecipeSearch();
+            recipeSearch.setRecipe(recipe);
+            recipeSearch.setIngredientsCombination(allIngredientscombination);
+            recipeSearchRepository.save(recipeSearch);
+
+            int nrOfComb = ingredients.length -1;
+            while(nrOfComb>1) {
+                String tempCombinations[] = new String[nrOfComb];
+                // Save all combination using temporary array 'tempCombinations[]'
+                saveCombinations(ingredients, tempCombinations, 0, ingredients.length - 1, 0, nrOfComb, recipe);
+                nrOfComb--;
+            }
+            System.out.println(
+                "Found not processed recipe - " + recipe.getName());
+            recipe.setProcessed(true);
+        }
+
+    }
+
+    /* allCombinations[]  ---> Input Array
+   tempCombinations[] ---> Temporary array to store current combination
+   start & end ---> Starting and Ending indexes in allCombinations[]
+   index  ---> Current index in tempCombinations[]
+   r ---> Size of a combination to be printed */
+     void saveCombinations(String allCombinations[], String tempCombinations[], int start,
+                                int end, int index, int r, Recipe recipe)
+    {
+        // Current combination is ready to be saved
+        if (index == r)
+        {
+            String ingredientscombination="";
+            for (int j=0; j<r; j++) {
+                System.out.print(tempCombinations[j] + " ");
+                ingredientscombination +=tempCombinations[j] + ",";
+            }
+            RecipeSearch recipeSearch = new RecipeSearch();
+            recipeSearch.setRecipe(recipe);
+            recipeSearch.setIngredientsCombination(ingredientscombination);
+            recipeSearchRepository.save(recipeSearch);
+            return ;
+        }
+        // replace index with all possible elements. The condition
+        // "end-i+1 >= r-index" makes sure that including one element
+        // at index will make a combination with remaining elements
+        // at remaining positions
+        for (int i=start; i<=end && end-i+1 >= r-index; i++)
+        {
+            tempCombinations[index] = allCombinations[i];
+            saveCombinations(allCombinations, tempCombinations, i+1, end, index+1, r, recipe);
+        }
     }
 }

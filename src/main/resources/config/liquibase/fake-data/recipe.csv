@@ -1,5 +1,5 @@
-id;name;description;created_by
-1;Juha;Recept za Juhu;admin
-2;Palačinke;Recept za Palačinke;admin
-3;Sendvič;Recept za sendvič;admin
-4;Salata sa tunom;Recept za salatu;admin
+id;name;description;created_by;processed
+1;Juha;Recept za Juhu;admin;false
+2;Palačinke;Recept za Palačinke;admin;false
+3;Sendvič;Recept za sendvič;admin;false
+4;Salata sa tunom;Recept za salatu;admin;false

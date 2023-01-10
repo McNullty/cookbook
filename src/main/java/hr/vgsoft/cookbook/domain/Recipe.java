@@ -29,6 +29,7 @@ public class Recipe extends AbstractAuditingEntity implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
+
     @Column(name = "description")
     private String description;
 
@@ -36,6 +37,8 @@ public class Recipe extends AbstractAuditingEntity implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "ingredient", "unit", "recipe" }, allowSetters = true)
     private Set<IngredientForRecipe> ingredientForRecipes = new HashSet<>();
+    @Column(name = "processed")
+    private boolean processed;
 
     public Recipe() {
     }
@@ -109,6 +112,14 @@ public class Recipe extends AbstractAuditingEntity implements Serializable {
     public Recipe removeIngredientForRecipe(IngredientForRecipe ingredientForRecipe) {
         this.ingredientForRecipes.remove(ingredientForRecipe);
         return this;
+    }
+
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
