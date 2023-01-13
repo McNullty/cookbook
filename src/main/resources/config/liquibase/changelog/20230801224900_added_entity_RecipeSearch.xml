@@ -20,6 +20,9 @@
             <column name="ingredients_combination" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
+            <column name="nr_Combinations" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>

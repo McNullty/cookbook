@@ -178,6 +178,21 @@ public class RecipeResource {
         return ResponseUtil.wrapOrNotFound(recipe);
     }
 
+    @GetMapping("/recipes/{ingredientsCombination}")
+    public Page<Recipe> getRecipeBySearch(
+        @RequestParam String ingredientsCombination,
+        @RequestParam(defaultValue = "0") Integer pageNo,
+        @RequestParam(defaultValue = "2") Integer pageSize) {
+
+        if (ingredientsCombination.isEmpty()) {
+            Page<Recipe> recipeList = recipeService.getAllRecipe(pageNo, pageSize);
+        return recipeList;}
+        else {
+            Page<Recipe> recipeList = recipeService.getRecipeBySearch(ingredientsCombination, pageNo, pageSize);
+            return recipeList;
+        }
+    }
+
     /**
      * {@code GET  /recipes/:id/details} : get the "id" recipe with details.
      *

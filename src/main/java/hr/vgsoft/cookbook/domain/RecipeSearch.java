@@ -29,6 +29,9 @@ public class RecipeSearch implements Serializable {
     @JsonIgnoreProperties(value = { "recipeSearch" }, allowSetters = true)
     private Recipe recipe;
 
+    @Column(name = "nrCombinations")
+    private int nrCombinations;
+
     public Long getId() {
         return id;
     }
@@ -53,5 +56,11 @@ public class RecipeSearch implements Serializable {
         this.recipe = recipe;
     }
 
+    public int getNrCombinations() {
+        return nrCombinations;
+    }
 
+    public void setNrCombinations(int nrCombinations) {
+        this.nrCombinations = nrCombinations;
+    }
 }

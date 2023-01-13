@@ -92,6 +92,13 @@ public class RecipeService {
 
     }
 
+    public Page<Recipe> getRecipeBySearch(String ingredientsCombination,Integer pageNo, Integer pageSize){
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+        Page<RecipeSearch> pagedResult = recipeSearchRepository.findAllByIngredientsCombinationIn(List.of(ingredientsCombination),paging);
+        //Page<Recipe> pagedResult = recipeRepository.findAll(paging);
+        return null;
+    }
+
     public Recipe updateRecipe(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
         Recipe existingRecipe = recipeRepository.getById(id);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -175,6 +182,8 @@ public class RecipeService {
         }
     }
 
+
+
     public Recipe updateRecipeMG(RecipeWithDetailsDTO recipeWithDetailsDTO, Long id) {
 
         Recipe existingRecipe = recipeRepository.getById(id);
@@ -243,7 +252,7 @@ public class RecipeService {
     }
     @Scheduled(fixedDelay = 60000)
     public void searchIngredientsJob(){
-        
+
         for(Recipe recipe : recipeRepository.findAllByProcessed(false)) {
 
             Set<IngredientForRecipe> ingredientsForRecipe= recipe.getIngredientForRecipes();
@@ -256,17 +265,7 @@ public class RecipeService {
                 k++;
             }
             //Sort alphabeticaly
-            String temp;
-            for (int i = 0; i < ingredients.length; i++) {
-                for (int j = i + 1; j <ingredients.length ; j++) {
-
-                    if (ingredients[i].compareTo(ingredients[j]) > 0) {
-                        temp = ingredients[i];
-                        ingredients[i] = ingredients[j];
-                        ingredients[j] = temp;
-                    }
-                }
-            }
+            Arrays.sort(ingredients);
             String allIngredientscombination="";
             for (String ingredient : ingredients) {
                 allIngredientscombination +=ingredient + "," ;
@@ -274,6 +273,7 @@ public class RecipeService {
             RecipeSearch recipeSearch = new RecipeSearch();
             recipeSearch.setRecipe(recipe);
             recipeSearch.setIngredientsCombination(allIngredientscombination);
+            recipeSearch.setNrCombinations(ingredients.length);
             recipeSearchRepository.save(recipeSearch);
 
             int nrOfComb = ingredients.length -1;
@@ -309,6 +309,7 @@ public class RecipeService {
             RecipeSearch recipeSearch = new RecipeSearch();
             recipeSearch.setRecipe(recipe);
             recipeSearch.setIngredientsCombination(ingredientscombination);
+            recipeSearch.setNrCombinations(tempCombinations.length);
             recipeSearchRepository.save(recipeSearch);
             return ;
         }
