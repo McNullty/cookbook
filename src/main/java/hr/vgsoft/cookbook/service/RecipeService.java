@@ -94,7 +94,11 @@ public class RecipeService {
 
     public Page<Recipe> getRecipeBySearch(String ingredientsCombination,Integer pageNo, Integer pageSize){
         Pageable paging = PageRequest.of(pageNo, pageSize);
-        Page<RecipeSearch> pagedResult = recipeSearchRepository.findAllByIngredientsCombinationIn(List.of(ingredientsCombination),paging);
+//        Page<RecipeSearch> pagedResult = recipeSearchRepository.findAllByIngredientsCombinationIn(List.of(ingredientsCombination),paging);
+
+        final List<Recipe> allBySearch = recipeRepository.findAllBySearch(
+            List.of("Luk,Mrkva,Piletina,Češnjak,", "Mrkva,Piletina,Češnjak,"));
+
         //Page<Recipe> pagedResult = recipeRepository.findAll(paging);
         return null;
     }
